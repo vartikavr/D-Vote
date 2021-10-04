@@ -1,0 +1,59 @@
+.home {
+  /* background-color: #4e90b2 !important; */
+  height: 100vh;
+  background-image: /*linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)), */ url("./images/homeBg.png");
+  background-size: contain;
+  background-position: center;
+  /* background-repeat: no-repeat; */
+}
+
+.heading {
+  padding-top: 1.6em;
+  padding-left: 1em;
+  font-size: 5.5em;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  animation: type 8s steps(60, end);
+}
+
+.desc {
+  padding-top: 0.5em;
+  padding-left: 2.9em;
+  font-size: 2em;
+  font-family: "Roboto Mono", monospace;
+  animation: type 8s steps(60, end);
+}
+
+.footer {
+  font-weight: 600;
+  padding-top: 13em;
+}
+
+.nav-item {
+  padding: 0.25rem 0;
+  margin-left: 3rem;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: large;
+  color: rgba(255, 255, 255, 0.7);
+  border-bottom: 0.25rem solid transparent;
+}
+
+.nav-item:hover {
+  color: rgba(255, 255, 255, 1);
+  border-bottom-color: white;
+}
+
+.navbar-logo {
+  padding-left: 1.7em;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  padding-left: 0.5em;
+}
+
+.navbar-nav {
+  padding-left: 55em;
+}
