@@ -11,6 +11,10 @@ const Card = () => {
     const [isError, setIsError] = useState(false);
     const [hasVoted, setHasVoted] = useState(false);
 
+    window.setTimeout(function () {
+        window.location.reload(); //reload page after 1min (60 sec)
+    }, 60000);
+
     useEffect(() => {
         getAddress();
         // console.log(address);
