@@ -1,23 +1,35 @@
 const Home = () => {
-    return ( 
-        <div className="home">
-            <div className="navbar">
+
+    return (
+        <div className="home d-flex p-3 mx-auto flex-column">
             <nav className="navbar sticky-top navbar-expand-lg navbar-dark navbar-bg">
                 <div className="container-fluid">
-                    <img className="navbar-logo" src="https://img.icons8.com/external-justicon-lineal-color-justicon/50/000000/external-vote-voting-justicon-lineal-color-justicon-1.png"/>
-                    <a className="navbar-brand" href="/" style={{ color: "#E8E2E2" }}>DVote</a>
+                    <a className="navbar-brand" href="/" style={{ color: "#E8E2E2" }}>
+                        <img className="navbar-logo" src="https://img.icons8.com/windows/45/000000/vote-yea.png" alt="DVote logo" />
+                        &nbsp; DVote
+                    </a>
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
                     <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-                        <div className="navbar-nav">
-                            <a className="nav-item d-block" href="/">Home</a>
-                            <a className="nav-item d-block" href="/">Working</a>
-                            <a className="nav-item d-block" href="/">Vote</a>
-                            <a className="nav-item d-block" href="/">My Card</a>
-                        </div>
+                        <ul className="navbar-nav ms-auto">
+                            <li className="nav-item">
+                                <a className="nav-link active" aria-current="page" href="/">Home</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link active" aria-current="page" href="/working">Working</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link active" aria-current="page" href="/vote">Vote</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link active" aria-current="page" href="/my-card">My Card</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </nav>
-        </div >
-            <div className="main">
+            <div className="main mt-auto">
                 <h2 className="heading">DVote</h2>
                 <p className="desc">
                     Decentralized voting.<br />
@@ -27,7 +39,7 @@ const Home = () => {
                 <p style={{ color: "black" }}>&copy; Made by the Election Commission of India</p>
             </div>
         </div>
-     );
+    );
 }
- 
+
 export default Home;

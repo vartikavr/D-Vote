@@ -8,7 +8,7 @@
 }
 
 .heading {
-  padding-top: 1.6em;
+  /* padding-top: 1.6em; */
   padding-left: 1em;
   font-size: 5.5em;
   color: rgba(255, 255, 255, 0.9);
@@ -27,12 +27,16 @@
 
 .footer {
   font-weight: 600;
-  padding-top: 13em;
+  /* padding-top: 13em; */
 }
 
-.nav-item {
+.navbar-bg-header {
+  background-color:black;
+}
+
+.nav-link {
   padding: 0.25rem 0;
-  margin-left: 3rem;
+  margin-left: 1rem;
   text-decoration: none;
   font-weight: 700;
   font-size: large;
@@ -40,9 +44,23 @@
   border-bottom: 0.25rem solid transparent;
 }
 
-.nav-item:hover {
+.nav-link:hover {
   color: rgba(255, 255, 255, 1);
   border-bottom-color: white;
+}
+
+.nav-item{
+  padding: 0.25rem 0;
+  margin-left: 1rem;
+  margin-right: 2rem;
+  text-decoration: none;
+  color:rgba(255,255,255,0.5);
+}
+.nav-item:hover{
+  color: rgba(255,255,255,0.8);
+}
+.nav-item.active{
+  color:white;
 }
 
 .navbar-logo {
@@ -51,9 +69,35 @@
 
 .navbar-brand {
   font-weight: 700;
-  padding-left: 0.5em;
+  margin-left: 1rem;
 }
 
-.navbar-nav {
-  padding-left: 55em;
+.card{
+  margin-top: 12em;
+}
+
+@media (max-width:990px){
+  .card{
+    margin-top: 3em;
+    margin-bottom: 3em;
+  }
+}
+
+.card-img{
+  margin-top: 6em;
+}
+
+.flash p{
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-align: center;
+  background-color: rgba(255,0,0,0.5);
+}
+
+.card-title{
+  font-size: 2em;
+}
+
+.card-text-heading{
+  font-size: 1.2em;
 }
