@@ -44,7 +44,7 @@
   border-bottom: 0.25rem solid transparent;
 }
 
-.nav-link:hover {
+.nav-link:hover, .nav-link.active {
   color: rgba(255, 255, 255, 1);
   border-bottom-color: white;
 }
@@ -74,6 +74,7 @@
 
 .card{
   margin-top: 12em;
+  padding: 3em;
 }
 
 @media (max-width:990px){
@@ -84,7 +85,7 @@
 }
 
 .card-img{
-  margin-top: 6em;
+  margin-top: 4em;
 }
 
 .flash p{
@@ -92,6 +93,13 @@
   font-size: 0.9rem;
   text-align: center;
   background-color: rgba(255,0,0,0.5);
+}
+
+.flash-success p{
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-align: center;
+  background-color: rgba(0, 255, 76, 0.603);
 }
 
 .card-title{

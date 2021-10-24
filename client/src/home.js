@@ -17,13 +17,13 @@ const Home = () => {
                                 <a className="nav-link active" aria-current="page" href="/">Home</a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link active" aria-current="page" href="/working">Working</a>
+                                <a className="nav-link" aria-current="page" href="/working">Working</a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link active" aria-current="page" href="/vote">Vote</a>
+                                <a className="nav-link" aria-current="page" href="/vote">Vote</a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link active" aria-current="page" href="/my-card">My Card</a>
+                                <a className="nav-link" aria-current="page" href="/my-card">My Card</a>
                             </li>
                         </ul>
                     </div>

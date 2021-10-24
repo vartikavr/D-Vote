@@ -10,20 +10,24 @@ const Vote = () => {
 
     const msgItems = [
         "A voter can only vote once.",
-        "A voter can not vote multiple candidates."
+        "A voter can not vote multiple candidates at the same time.",
+        "The voter is recommended to re-check their current connected account address on 'My Card'."
     ]
     const [candidatesCount, setCandidatesCount] = useState(0);
     const [isError, setIsError] = useState(false);
-    const [hasLoaded, setHasLoaded] = useState(false);
+    const [loadingVote, setLoadingVote] = useState(false);
     const [hasVoted, setHasVoted] = useState(false);
+    const [errVote, setErrVote] = useState('');
+    const [successVote, setSuccessVote] = useState(false);
+    const [isReload, setIsReload] = useState(false);
+    const [candidatesDisplay, setCandidatesDisplay] = useState([]);
     const { Header, Row, HeaderCell, Body, Cell } = Table;
     const election = Election(process.env.REACT_APP_ADDRESS);
-    let [candidateData, setCandidateData] = useState([]);
 
     useEffect(() => {
         getAddress();
         getCandidateCount();
-    }, []);
+    }, [isReload]);
 
     const getAddress = async () => {
         setIsError(false);
@@ -42,24 +46,36 @@ const Vote = () => {
     }
 
     const getCandidateCount = async () => {
-        //setHasLoaded(false);
         const count = await election.methods.candidatesCount().call();
         setCandidatesCount(count);
+        let candidateData = [];
         for (var i = 1; i <= count; i++) {
             const candidate = await election.methods.candidates(i).call();
-            //console.log(candidate);
             candidateData.push(candidate);
         }
-        // candidateData = await Promise.all(
-        //     Array(parseInt(count))
-        //         .fill()
-        //         .map((element, index) => {
-        //             return election.methods.candidates(index + 1).call();
-        //         })
-        // )
         console.log(candidateData);
-        setHasLoaded(true);
-        console.log(candidateData[1])
+        setCandidatesDisplay(candidateData);
+    }
+
+    const handleVote = async (event) => {
+        setLoadingVote(true);
+        setErrVote('');
+        setIsReload(false);
+        setSuccessVote(false);
+        try {
+            const accounts = await web3.eth.getAccounts();
+            await election.methods.vote(event.target.id).send({
+                from: accounts[0]
+            });
+            setLoadingVote(false);
+            setSuccessVote(true);
+            setIsReload(true);
+        }
+        catch (err) {
+            setLoadingVote(false);
+            setErrVote(err.message);
+            setSuccessVote(false);
+        }
     }
 
     return (
@@ -73,7 +89,28 @@ const Vote = () => {
                     <Message.Header>Important!</Message.Header>
                     <Message.List items={msgItems} />
                 </Message>
-                {(candidateData != '') &&
+                {isError && (
+                    <div className="flash mb-3">
+                        <FlashMessage duration={5000}>
+                            <p>Address not found. Please login into your Metamask account!</p>
+                        </FlashMessage>
+                    </div>
+                )}
+                {!isError && (errVote != '') && (
+                    <div className="flash mb-3">
+                        <FlashMessage duration={5000}>
+                            <p>An error occured!<br />{errVote}</p>
+                        </FlashMessage>
+                    </div>
+                )}
+                {successVote && (
+                    <div className="flash-success mb-3">
+                        <FlashMessage duration={5000}>
+                            <p>Voted successfully!</p>
+                        </FlashMessage>
+                    </div>
+                )}
+                {(candidatesDisplay != '') &&
                     (
                         <div className="candidateTable">
                             <Table>
@@ -88,7 +125,7 @@ const Vote = () => {
                                 </Header>
                                 <Body>
                                     {
-                                        candidateData.map((candidate, i) => {
+                                        candidatesDisplay.map((candidate, i) => {
                                             return <Row>
                                                 <Cell>
                                                     <Label ribbon>{candidate.id}</Label>
@@ -105,8 +142,11 @@ const Vote = () => {
                                                             >Vote</Button>
                                                             :
                                                             <Button
+                                                                id={candidate.id}
+                                                                loading={loadingVote}
                                                                 color="teal"
                                                                 basic
+                                                                onClick={handleVote}
                                                             >Vote</Button>
                                                     }
                                                 </Cell>
