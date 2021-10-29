@@ -10,6 +10,7 @@ const Card = () => {
     const [address, setAddress] = useState(undefined);
     const [isError, setIsError] = useState(false);
     const [hasVoted, setHasVoted] = useState(false);
+    const [noMetamask, setNoMetamask] = useState(false);
 
     window.setTimeout(function () {
         window.location.reload(); //reload page after 1min (60 sec)
@@ -22,14 +23,20 @@ const Card = () => {
 
     const getAddress = async () => {
         setIsError(false);
-        const storeAddress = await web3.eth.getCoinbase((err, coinbase) => { console.log(coinbase) });
-        // console.log(storeAddress);
-        setAddress(storeAddress);
-        if (storeAddress == undefined) {
-            setIsError(true);
+        setNoMetamask(false);
+        try {
+            const storeAddress = await web3.eth.getCoinbase((err, coinbase) => { console.log(coinbase) });
+            //console.log(storeAddress);
+            setAddress(storeAddress);
+            if (storeAddress == undefined) {
+                setIsError(true);
+            }
+            else {
+                getVoted(storeAddress);
+            }
         }
-        else {
-            getVoted(storeAddress);
+        catch (err) {
+            setNoMetamask(true);
         }
     }
 
@@ -43,6 +50,13 @@ const Card = () => {
         //console.log(hasVoted)
     }
 
+    const websiteStyle = {
+        color: "white",
+        borderBottom: "solid",
+        borderBottomWidth: "thin",
+        borderBottomColor: "black"
+    }
+
     return (
         <div className="my-card">
             <div className="card shadow col-4 col-lg-6 offset-4 offset-lg-3">
@@ -50,6 +64,13 @@ const Card = () => {
                     <div className="flash">
                         <FlashMessage duration={5000}>
                             <p>Address not found. Please login into your Metamask account!</p>
+                        </FlashMessage>
+                    </div>
+                )}
+                {noMetamask && (
+                    <div className="flash">
+                        <FlashMessage duration={5000}>
+                            <p><a href="https://metamask.io/" style={websiteStyle} target="_blank">Metamask</a> not installed. Kindly install it to continue.</p>
                         </FlashMessage>
                     </div>
                 )}

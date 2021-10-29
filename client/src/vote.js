@@ -21,6 +21,7 @@ const Vote = () => {
     const [successVote, setSuccessVote] = useState(false);
     const [isReload, setIsReload] = useState(false);
     const [candidatesDisplay, setCandidatesDisplay] = useState([]);
+    const [noMetamask, setNoMetamask] = useState(false);
     const { Header, Row, HeaderCell, Body, Cell } = Table;
     const election = Election(process.env.REACT_APP_ADDRESS);
 
@@ -31,12 +32,18 @@ const Vote = () => {
 
     const getAddress = async () => {
         setIsError(false);
-        const storeAddress = await web3.eth.getCoinbase((err, coinbase) => { console.log(coinbase) });
-        if (storeAddress == undefined) {
-            setIsError(true);
+        setNoMetamask(false);
+        try {
+            const storeAddress = await web3.eth.getCoinbase((err, coinbase) => { console.log(coinbase) });
+            if (storeAddress == undefined) {
+                setIsError(true);
+            }
+            else {
+                getVoted(storeAddress);
+            }
         }
-        else {
-            getVoted(storeAddress);
+        catch (err) {
+            setNoMetamask(true);
         }
     }
 
@@ -78,6 +85,13 @@ const Vote = () => {
         }
     }
 
+    const websiteStyle = {
+        color: "white",
+        borderBottom: "solid",
+        borderBottomWidth: "thin",
+        borderBottomColor: "black"
+    }
+
     return (
         <div className="cast-vote">
             <div className="container col-md-8 p-5">
@@ -89,6 +103,13 @@ const Vote = () => {
                     <Message.Header>Important!</Message.Header>
                     <Message.List items={msgItems} />
                 </Message>
+                {noMetamask && (
+                    <div className="flash mb-3">
+                        <FlashMessage duration={5000}>
+                            <p><a href="https://metamask.io/" style={websiteStyle} target="_blank">Metamask</a> not installed. Kindly install it to continue.</p>
+                        </FlashMessage>
+                    </div>
+                )}
                 {isError && (
                     <div className="flash mb-3">
                         <FlashMessage duration={5000}>
