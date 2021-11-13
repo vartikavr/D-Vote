@@ -3,14 +3,17 @@ import { useState, useEffect } from "react";
 import web3 from '../../ethereum/web3';
 import FlashMessage from 'react-flash-message';
 import Election from '../../ethereum/election';
+import data from '../../seeders/data';
 require('dotenv').config()
 
 const Card = () => {
 
     const [address, setAddress] = useState(undefined);
-    const [isError, setIsError] = useState(false);
+    const [isError, setIsError] = useState(false); //address found or not
+    const [isRegistered, setIsRegistered] = useState(true); //address is registered or not
     const [hasVoted, setHasVoted] = useState(false);
     const [noMetamask, setNoMetamask] = useState(false);
+    const [voterDetails, setVoterDetails] = useState('');
 
     window.setTimeout(function () {
         window.location.reload(); //reload page after 1min (60 sec)
@@ -24,6 +27,7 @@ const Card = () => {
     const getAddress = async () => {
         setIsError(false);
         setNoMetamask(false);
+        setIsRegistered(true);
         try {
             const storeAddress = await web3.eth.getCoinbase((err, coinbase) => { console.log(coinbase) });
             //console.log(storeAddress);
@@ -32,7 +36,23 @@ const Card = () => {
                 setIsError(true);
             }
             else {
-                getVoted(storeAddress);
+                let foundIndex = -1;
+                for(let i=0;i<data.length;i++)
+                {
+                    if(data[i].address.toLowerCase() == storeAddress)
+                    {
+                        foundIndex = i;
+                        break;
+                    }
+                }
+                if(foundIndex != -1)
+                {
+                    setVoterDetails(data[foundIndex]);
+                    getVoted(storeAddress);
+                }
+                else{
+                    setIsRegistered(false);
+                }
             }
         }
         catch (err) {
@@ -74,15 +94,28 @@ const Card = () => {
                         </FlashMessage>
                     </div>
                 )}
+                {!isError && (!isRegistered) && (
+                    <div className="flash mb-3">
+                        <FlashMessage duration={5000}>
+                            <p>Account address not linked with a valid voterID!</p>
+                        </FlashMessage>
+                    </div>
+                )}
                 <div className="row no-gutters">
                     <div className="col-lg-4">
-                        <img src={CardSvg} className="card-img" alt="generalized card picture" />
+                        <img src={CardSvg} className={`card-img ${(isRegistered && !noMetamask) ? " card-details-img" :""}`} alt="generalized card picture" />
                     </div>
                     <div className="col-lg-8">
                         <div class="card-body">
                             <h5 className="card-title">My DVote Card</h5>
                             <p className="card-text">This is a digital voter ID card, containing the linked account address of voter and other essential details.</p>
                             <p className="card-text"><span className="card-text-heading" style={{ fontWeight: 550 }}>Account address : </span>{address}</p>
+                            {!noMetamask && isRegistered && 
+                                <p className="card-text"><span className="card-text-heading" style={{ fontWeight: 550 }}>Voter ID : </span>{voterDetails.voterID}</p>
+                            }
+                            {!noMetamask && isRegistered && 
+                                <p className="card-text"><span className="card-text-heading" style={{ fontWeight: 550 }}>Voter's name : </span>{voterDetails.name}</p>
+                            }
                             <p className="card-text"><span className="card-text-heading" style={{ fontWeight: 550 }}>Voted : </span>{'' + hasVoted}</p>
                             <p className="card-text"><small class="text-muted">Last updated 1 min ago</small></p>
                         </div>

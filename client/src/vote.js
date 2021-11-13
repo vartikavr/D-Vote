@@ -4,20 +4,22 @@ import { Message, Table, Label, Button } from 'semantic-ui-react';
 import Election from '../../ethereum/election';
 import FlashMessage from 'react-flash-message';
 import web3 from '../../ethereum/web3';
+import data from '../../seeders/data';
 require('dotenv').config()
 
 const Vote = () => {
 
     const msgItems = [
         "A voter can only vote once.",
-        "A voter can not vote multiple candidates at the same time.",
+        "The voter's current account address should be linked with his voter ID.",
         "The voter is recommended to re-check their current connected account address on 'My Card'."
     ]
     const [candidatesCount, setCandidatesCount] = useState(0);
-    const [isError, setIsError] = useState(false);
+    const [isError, setIsError] = useState(false); //address not found
+    const [isRegistered, setIsRegistered] = useState(true); //address is registered or not
     const [loadingVote, setLoadingVote] = useState(false);
     const [hasVoted, setHasVoted] = useState(false);
-    const [errVote, setErrVote] = useState('');
+    const [errVote, setErrVote] = useState(''); //error during voting
     const [successVote, setSuccessVote] = useState(false);
     const [isReload, setIsReload] = useState(false);
     const [candidatesDisplay, setCandidatesDisplay] = useState([]);
@@ -33,13 +35,29 @@ const Vote = () => {
     const getAddress = async () => {
         setIsError(false);
         setNoMetamask(false);
+        setIsRegistered(true);
         try {
             const storeAddress = await web3.eth.getCoinbase((err, coinbase) => { console.log(coinbase) });
             if (storeAddress == undefined) {
                 setIsError(true);
             }
             else {
-                getVoted(storeAddress);
+                let found = false;
+                for(let i=0;i<data.length;i++)
+                {
+                    if(data[i].address.toLowerCase() == storeAddress)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if(found)
+                {
+                    getVoted(storeAddress);
+                }
+                else{
+                    setIsRegistered(false);
+                }
             }
         }
         catch (err) {
@@ -117,7 +135,14 @@ const Vote = () => {
                         </FlashMessage>
                     </div>
                 )}
-                {!isError && (errVote != '') && (
+                {!isError && (!isRegistered) && (
+                    <div className="flash mb-3">
+                        <FlashMessage duration={5000}>
+                            <p>Account address not linked with a valid voterID!</p>
+                        </FlashMessage>
+                    </div>
+                )}
+                {!isError && isRegistered && (errVote != '') && (
                     <div className="flash mb-3">
                         <FlashMessage duration={5000}>
                             <p>An error occured!<br />{errVote}</p>
@@ -156,7 +181,7 @@ const Vote = () => {
                                                 <Cell>{candidate.voteCount}</Cell>
                                                 <Cell>
                                                     {
-                                                        hasVoted
+                                                        (hasVoted || noMetamask || isError || !isRegistered) 
                                                             ?
                                                             <Button
                                                                 disabled
