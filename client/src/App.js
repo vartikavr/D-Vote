@@ -3,7 +3,7 @@ import Home from "./views/home/home";
 import Navbar from "./views/navbar/navbar";
 import Working from "./views/working/working";
 import Card from "./views/card/card";
-import Vote from "./views/vote/vote";
+import Vote from "./views/vote/vote/vote";
 
 function App() {
   return (

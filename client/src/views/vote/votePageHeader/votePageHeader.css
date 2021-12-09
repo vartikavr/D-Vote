@@ -1,0 +1,34 @@
+.btn-addCandidate {
+  padding: 5px 150px;
+  margin: 30px auto;
+  display: block;
+  font-size: 1em;
+  border-radius: 20px;
+  border: 2px solid #4b8ef1;
+  color: #4b8ef1;
+  font-weight: 600;
+  outline: none;
+  background: transparent;
+}
+
+.btn-addCandidate:hover {
+  transform: translateY(-2px);
+  background-color: #4b8ef1;
+  color: #fff;
+}
+
+.btn-addCandidate:focus {
+  outline: none;
+}
+
+.btn-addCandidateLoading {
+  padding: 5px 150px;
+  margin: 30px auto;
+  display: block;
+  font-size: 1em;
+  border-radius: 20px;
+  border: 2px solid #4b8ef1;
+  font-weight: 600;
+  background-color: #4b8ef1;
+  color: #fff;
+}

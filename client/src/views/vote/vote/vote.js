@@ -1,13 +1,15 @@
 import "./vote.css";
 import { useState, useEffect } from "react";
-import TableRow from "./tableRow";
-import Election from "../../../../ethereum/election";
-import web3 from "../../../../ethereum/web3";
-import data from "../../../../seeders/data";
-import { Link } from "react-router-dom";
+import TableRow from "../tableRow/tableRow";
+import Election from "../../../../../ethereum/election";
+import web3 from "../../../../../ethereum/web3";
+import data from "../../../../../seeders/data";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AddCandidateModal from "./addCandidateModal.js";
+import VotePageHeader from "../votePageHeader/votePageHeader";
+import EditCandidateModal from "../tableRow/editCandidateModal";
 toast.configure();
 require("dotenv").config();
 
@@ -23,12 +25,25 @@ const Vote = () => {
   const [endPending, setEndPending] = useState(false);
   const [noMetamask, setNoMetamask] = useState(false); //metamask installed in system or not
   const [loadingVote, setLoadingVote] = useState(false); //voting in-process
+  const [loadingAdd, setLoadingAdd] = useState(false); //adding candidate in-process
+  const [name, setName] = useState(""); //name of new added candidate
+  const [party, setParty] = useState(""); //party of new added candidate
+  const [loadingEdit, setLoadingEdit] = useState(false); //editing a candidate in-process
+  const [editCandidateInfo, setEditCandidateInfo] = useState(""); //details of candidate to be edited
   const election = Election(process.env.REACT_APP_ADDRESS);
 
   useEffect(() => {
     getAddress();
     getCandidateCount();
   }, [isReload]);
+
+  useEffect(() => {
+    const form = document.getElementById("form");
+    document.getElementById("submitBtn").disabled = true;
+    form.addEventListener("change", () => {
+      document.getElementById("submitBtn").disabled = !form.checkValidity();
+    });
+  }, [name, party]);
 
   const getAddress = async () => {
     setIsError(false);
@@ -101,6 +116,19 @@ const Vote = () => {
 
   return (
     <div className="cast-vote">
+      <AddCandidateModal
+        setLoadingAdd={setLoadingAdd}
+        setIsReload={setIsReload}
+        name={name}
+        setName={setName}
+        party={party}
+        setParty={setParty}
+      />
+      <EditCandidateModal
+        setLoadingEdit={setLoadingEdit}
+        setIsReload={setIsReload}
+        editCandidateInfo={editCandidateInfo}
+      />
       {!endPending && (
         <div className="pageLoading">
           <ReactLoading
@@ -113,27 +141,7 @@ const Vote = () => {
       )}
       {endPending && (
         <div className="container col-md-8 p-5">
-          <h2 style={{ color: "#4b8ef1" }}>Cast Your Vote</h2>
-          <div
-            className="alert alert-info mt-3 mb-3"
-            role="alert"
-            style={{ overflowWrap: "break-word" }}
-          >
-            <h5>Important!</h5>
-            <ul className="ms-4">
-              <li style={{ listStyleType: "circle", display: "list-item" }}>
-                A voter can only vote once.
-              </li>
-              <li style={{ listStyleType: "circle", display: "list-item" }}>
-                The voter's current account address should be linked with his
-                voter ID.
-              </li>
-              <li style={{ listStyleType: "circle", display: "list-item" }}>
-                The voter is recommended to re-check their current connected
-                account address on <Link to="/my-card">My Card</Link>.
-              </li>
-            </ul>
-          </div>
+          <VotePageHeader isAdmin={isAdmin} loadingAdd={loadingAdd} />
           {candidatesDisplay != "" && (
             <div className="candidateTable">
               <table
@@ -157,6 +165,11 @@ const Vote = () => {
                     <th className="voteTableHeader" scope="col">
                       Vote
                     </th>
+                    {isAdmin && (
+                      <th className="voteTableHeader" scope="col">
+                        Edit
+                      </th>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
@@ -171,6 +184,9 @@ const Vote = () => {
                         setIsReload={setIsReload}
                         loadingVote={loadingVote}
                         setLoadingVote={setLoadingVote}
+                        loadingEdit={loadingEdit}
+                        isAdmin={isAdmin}
+                        setEditCandidateInfo={setEditCandidateInfo}
                       />
                     );
                   })}

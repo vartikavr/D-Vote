@@ -1070,37 +1070,6 @@ PopUp
   background: #fff;
 }
 
-.btn {
-  padding: 10px 20px;
-  background: #4b8ef1;
-  color: #fff;
-  transition: all 0.3s;
-}
-
-.btn_red {
-  background: #4b8ef1;
-  color: #fff;
-}
-
-.btn:hover {
-  background: #e4e4e2;
-}
-
-.btn_red:hover {
-  color: #2a2a2a;
-  background: #e4e4e2;
-}
-
-a.btn {
-  color: #fff;
-  text-align: center;
-  text-decoration: none;
-}
-
-a.btn_red {
-  color: #fff;
-}
-
 .one_half {
   width: 50%;
   display: block;

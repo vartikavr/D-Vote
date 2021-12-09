@@ -1,5 +1,6 @@
-import Election from "../../../../ethereum/election";
-import web3 from "../../../../ethereum/web3";
+import "./tableRow.css";
+import Election from "../../../../../ethereum/election";
+import web3 from "../../../../../ethereum/web3";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 toast.configure();
@@ -13,6 +14,9 @@ const TableRow = ({
   setIsReload,
   loadingVote,
   setLoadingVote,
+  loadingEdit,
+  isAdmin,
+  setEditCandidateInfo,
 }) => {
   const election = Election(process.env.REACT_APP_ADDRESS);
 
@@ -30,6 +34,17 @@ const TableRow = ({
     } catch (err) {
       setLoadingVote(false);
       toast.error(`An error occured! ${err.message}`);
+    }
+  };
+
+  const loadEditCandidateInfo = async (event) => {
+    try {
+      const candidate = await election.methods
+        .candidates(event.target.id)
+        .call();
+      setEditCandidateInfo(candidate);
+    } catch (e) {
+      toast.error("An error occured. Please try again!");
     }
   };
 
@@ -68,6 +83,35 @@ const TableRow = ({
           </div>
         )}
       </th>
+      {isAdmin && (
+        <th>
+          {candidate.voteCount > 0 && (
+            <button className="editButtonDisabled" disabled>
+              Edit
+            </button>
+          )}
+          {!loadingEdit && candidate.voteCount == 0 && (
+            <button
+              id={candidate.id}
+              className="editButton"
+              data-toggle="modal"
+              data-target="#editModalCenter"
+              onClick={loadEditCandidateInfo}
+            >
+              Edit
+            </button>
+          )}
+          {loadingEdit && candidate.voteCount == 0 && (
+            <button className="editButton">
+              <span
+                className="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          )}
+        </th>
+      )}
     </tr>
   );
 };

@@ -1,21 +1,22 @@
-.flash p {
-  font-weight: 500;
-  font-size: 0.9rem;
-  text-align: center;
-  background-color: rgba(255, 0, 0, 0.5);
-}
-
-.flash-success p {
-  font-weight: 500;
-  font-size: 0.9rem;
-  text-align: center;
-  background-color: rgba(0, 255, 76, 0.603);
-}
-
 .pageLoading {
   position: absolute;
   left: 50%;
   top: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+}
+
+.modal .close {
+  border: none;
+  background: transparent;
+  font-size: 2em;
+  color: grey;
+}
+
+.modal .close:hover {
+  color: black;
+}
+
+.modal .close:focus {
+  outline: none;
 }

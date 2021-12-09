@@ -32,7 +32,7 @@ const Card = () => {
     setIsRegistered(true);
     try {
       const storeAddress = await web3.eth.getCoinbase((err, coinbase) => {
-        console.log(coinbase);
+        // console.log(coinbase);
       });
       //console.log(storeAddress);
       setAddress(storeAddress);

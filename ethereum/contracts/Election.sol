@@ -26,7 +26,7 @@ contract Election {
         addCandidate("NOTA", "None of the above");
     }
 
-    function addCandidate(string memory name, string memory party) private {
+    function addCandidate(string memory name, string memory party) public {
         candidatesCount++;
         candidates[candidatesCount] = Candidate(
             candidatesCount,
@@ -34,6 +34,16 @@ contract Election {
             party,
             0
         );
+    }
+
+    function editCandidate(
+        uint256 cid,
+        string memory name,
+        string memory party
+    ) public {
+        require(candidates[cid].voteCount == 0);
+        candidates[cid].name = name;
+        candidates[cid].party = party;
     }
 
     function vote(uint256 _candidateId) public {

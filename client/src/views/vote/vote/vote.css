@@ -1,0 +1,8 @@
+.voteTableHeader {
+  background-color: #65a0f8 !important;
+}
+
+.form-label:after {
+  content: "*";
+  color: red;
+}
