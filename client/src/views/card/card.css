@@ -1,0 +1,28 @@
+.card-title {
+  font-size: 2em;
+  color: #4b8ef1;
+}
+
+.card-text-heading {
+  font-size: 1.2em;
+}
+
+.flippy-card {
+  height: 230px;
+}
+.flippy-card-front h5,
+.flippy-card-back h5 {
+  padding-top: 0.5em;
+}
+@media (max-width: 520px) {
+  .flippy-card-front h5 {
+    padding-top: 0;
+  }
+}
+.flippy-card .flippy-card-front {
+  margin-top: 180px;
+  background-color: #92b9f3;
+}
+.flippy-card .flippy-card-back {
+  border: 1px solid #92b9f3;
+}

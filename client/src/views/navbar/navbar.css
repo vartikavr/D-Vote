@@ -1,0 +1,42 @@
+.navbar-bg-header {
+  background-color: #03224d;
+}
+
+.nav-link {
+  padding: 0.25rem 0;
+  margin-left: 1rem;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: large;
+  color: rgba(255, 255, 255, 0.7);
+  border-bottom: 0.25rem solid transparent;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: rgba(255, 255, 255, 1);
+  border-bottom-color: white;
+}
+
+.nav-item {
+  padding: 0.25rem 0;
+  margin-left: 1rem;
+  margin-right: 2rem;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.5);
+}
+.nav-item:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+.nav-item.active {
+  color: white;
+}
+
+.navbar-logo {
+  padding-left: 1.7em;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  margin-left: 1rem;
+}

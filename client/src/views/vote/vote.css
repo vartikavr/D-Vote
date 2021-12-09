@@ -1,0 +1,28 @@
+.voteTableHeader {
+  background-color: #65a0f8 !important;
+}
+
+.voteButton {
+  background-color: #4b8ef1;
+  color: #fff;
+  border-radius: 10px;
+  padding: 2px 10px;
+  border: 1px solid #fff;
+  outline: none;
+}
+.voteButton:hover {
+  background-color: #fff;
+  border: 1px solid #4b8ef1;
+  color: #4b8ef1;
+}
+.voteButton:focus {
+  outline: none;
+}
+
+.voteButtonDisabled {
+  background-color: rgb(221, 216, 216);
+  border-radius: 10px;
+  padding: 2px 10px;
+  border: 1px solid #fff;
+  outline: none;
+}
