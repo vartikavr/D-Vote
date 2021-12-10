@@ -1,3 +1,8 @@
+.form-label:after {
+  content: "*";
+  color: red;
+}
+
 .voteButton,
 .editButton {
   background-color: #4b8ef1;

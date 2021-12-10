@@ -78,7 +78,7 @@ const EditCandidateModal = ({
             {editCandidateInfo && (
               <form>
                 <div className="mb-2">
-                  <label className="form-label">
+                  <label className="form-label-edit">
                     <b>Candidate Name</b>
                   </label>
                   <input
@@ -93,7 +93,7 @@ const EditCandidateModal = ({
                   />
                 </div>
                 <div className="mb-2">
-                  <label className="form-label">
+                  <label className="form-label-edit">
                     <b>Party Name</b>
                   </label>
                   <input
