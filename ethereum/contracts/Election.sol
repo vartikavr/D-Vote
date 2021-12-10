@@ -1,6 +1,7 @@
 pragma solidity >=0.5.16;
 
 contract Election {
+    address public manager;
     struct Candidate {
         uint256 id;
         string name;
@@ -18,6 +19,7 @@ contract Election {
 
     //Constructor function
     constructor() public {
+        manager = msg.sender;
         addCandidate("Amar Singh Rai", "All India Trinamool Congress");
         addCandidate("Raju Bista", "Bharatiya Janata Party");
         addCandidate("Saman Pathak", "Communist Party Of India (Marxist)");
@@ -26,7 +28,16 @@ contract Election {
         addCandidate("NOTA", "None of the above");
     }
 
-    function addCandidate(string memory name, string memory party) public {
+    modifier admin() //function modifier, to reduce the amount of code that we'll write; think of this as a macro
+    {
+        require(msg.sender == manager);
+        _;
+    }
+
+    function addCandidate(string memory name, string memory party)
+        public
+        admin
+    {
         candidatesCount++;
         candidates[candidatesCount] = Candidate(
             candidatesCount,
@@ -40,7 +51,7 @@ contract Election {
         uint256 cid,
         string memory name,
         string memory party
-    ) public {
+    ) public admin {
         require(candidates[cid].voteCount == 0);
         candidates[cid].name = name;
         candidates[cid].party = party;

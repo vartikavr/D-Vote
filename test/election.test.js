@@ -27,24 +27,6 @@ describe("Election", () => {
   });
 
   it("initializes the given candidates with the correct values", async () => {
-    candidateInfo = await election.methods.candidates(1).call();
-    assert.equal(candidateInfo.id, 1, "contains the correct id");
-    assert.equal(
-      candidateInfo.name,
-      "Amar Singh Rai",
-      "contains the correct name"
-    );
-    assert.equal(
-      candidateInfo.party,
-      "All India Trinamool Congress",
-      "contains the correct party"
-    );
-    assert.equal(
-      candidateInfo.voteCount,
-      0,
-      "contains the correct votes count"
-    );
-
     candidateInfo = await election.methods.candidates(6).call();
     assert.equal(candidateInfo.id, 6, "contains the correct id");
     assert.equal(candidateInfo.name, "NOTA", "contains the correct name");
@@ -60,9 +42,9 @@ describe("Election", () => {
     );
   });
 
-  it("adds and edits a new candidate", async () => {
+  it("adds and edits a new candidate by admin", async () => {
     await election.methods.addCandidate("Modi", "BJP").send({
-      from: accounts[1],
+      from: accounts[0],
       gas: "1000000",
     });
     candidateInfo = await election.methods.candidates(7).call();
@@ -75,7 +57,7 @@ describe("Election", () => {
       "contains the correct votes count"
     );
     await election.methods.editCandidate(7, "Vartika", "Congress").send({
-      from: accounts[1],
+      from: accounts[0],
       gas: "1000000",
     });
     candidateInfo = await election.methods.candidates(7).call();
@@ -90,12 +72,12 @@ describe("Election", () => {
   });
 
   it("allows a voter to cast a vote", async () => {
-    hasVoted = await election.methods.voters(accounts[0]).call();
+    hasVoted = await election.methods.voters(accounts[1]).call();
     assert.equal(hasVoted, false, "not voted yet");
     await election.methods.vote(3).send({
-      from: accounts[0],
+      from: accounts[1],
     });
-    hasVoted = await election.methods.voters(accounts[0]).call();
+    hasVoted = await election.methods.voters(accounts[1]).call();
     assert.equal(hasVoted, true, "successfully voted");
     candidateInfo = await election.methods.candidates(3).call();
     assert.equal(
