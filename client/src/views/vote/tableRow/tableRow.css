@@ -4,7 +4,9 @@
 }
 
 .voteButton,
-.editButton {
+.editButton,
+.voteButtonLoading,
+.editButtonLoading {
   background-color: #4b8ef1;
   color: #fff;
   border-radius: 10px;
@@ -19,7 +21,9 @@
   color: #4b8ef1;
 }
 .voteButton:focus,
-.editButton:focus {
+.editButton:focus,
+.voteButtonLoading:focus,
+.editButtonLoading:focus {
   outline: none;
 }
 

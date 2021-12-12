@@ -71,13 +71,13 @@ const TableRow = ({
               </button>
             )}
             {loadingVote && (
-              <button className="voteButton">
+              <button className="voteButtonLoading">
                 <span
                   className="spinner-border spinner-border-sm"
                   role="status"
                   aria-hidden="true"
                 ></span>
-                &nbsp;Voting..
+                &nbsp;Voting
               </button>
             )}
           </div>
@@ -102,7 +102,7 @@ const TableRow = ({
             </button>
           )}
           {loadingEdit && candidate.voteCount == 0 && (
-            <button className="editButton">
+            <button className="editButtonLoading">
               <span
                 className="spinner-border spinner-border-sm"
                 role="status"
