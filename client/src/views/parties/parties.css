@@ -1,0 +1,59 @@
+.allParties .card {
+  background-color: #c2d7f7;
+}
+
+.btn-addParty {
+  padding: 5px 150px;
+  margin: 30px auto;
+  display: block;
+  font-size: 1em;
+  border-radius: 20px;
+  border: 2px solid #4b8ef1;
+  color: #4b8ef1;
+  font-weight: 600;
+  outline: none;
+  background: transparent;
+}
+
+.btn-addParty:hover {
+  transform: translateY(-2px);
+  background-color: #4b8ef1;
+  color: #fff;
+}
+
+.btn-addParty:focus {
+  outline: none;
+}
+
+.btn-addPartyLoading {
+  padding: 5px 150px;
+  margin: 30px auto;
+  display: block;
+  font-size: 1em;
+  border-radius: 20px;
+  border: 2px solid #4b8ef1;
+  font-weight: 600;
+  background-color: #4b8ef1;
+  color: #fff;
+}
+
+.float-child {
+  float: left;
+}
+
+.partyLogo {
+  border-radius: 10px;
+  background-color: #fff;
+  color: #4b8ef1;
+  border: 2px solid #4b8ef1;
+  padding: 8px 15px;
+}
+
+.partyLogo:hover {
+  background-color: #4b8ef1;
+  color: #fff;
+}
+
+.partyLogo:focus {
+  outline: none;
+}

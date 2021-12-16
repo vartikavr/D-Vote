@@ -3,18 +3,19 @@ import { useState, useEffect } from "react";
 import TableRow from "../tableRow/tableRow";
 import Election from "../../../../../ethereum/election";
 import web3 from "../../../../../ethereum/web3";
-import data from "../../../../../seeders/data";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 import AddCandidateModal from "./addCandidateModal.js";
 import VotePageHeader from "../votePageHeader/votePageHeader";
 import EditCandidateModal from "../tableRow/editCandidateModal";
+import { useParams } from "react-router-dom";
+import PartyLogo from "../../parties/partyLogo";
 toast.configure();
 require("dotenv").config();
 
 const Vote = () => {
-  const [candidatesCount, setCandidatesCount] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false); //check if user is admin
   const [isError, setIsError] = useState(false); //address not found
   const [isRegistered, setIsRegistered] = useState(true); //address is registered or not
@@ -28,13 +29,16 @@ const Vote = () => {
   const [loadingAdd, setLoadingAdd] = useState(false); //adding candidate in-process
   const [name, setName] = useState(""); //name of new added candidate
   const [party, setParty] = useState(""); //party of new added candidate
+  const [constituency, setConstituency] = useState(""); //constituency of new candidate
   const [loadingEdit, setLoadingEdit] = useState(false); //editing a candidate in-process
   const [editCandidateInfo, setEditCandidateInfo] = useState(""); //details of candidate to be edited
   const election = Election(process.env.REACT_APP_ADDRESS);
+  const { id } = useParams();
+  const [partyLogo, setPartyLogo] = useState("");
 
   useEffect(() => {
     getAddress();
-    getCandidateCount();
+    getConstituencyDetails();
   }, [isReload]);
 
   useEffect(() => {
@@ -43,7 +47,7 @@ const Vote = () => {
     form.addEventListener("change", () => {
       document.getElementById("submitBtn").disabled = !form.checkValidity();
     });
-  }, [name, party]);
+  }, [name, party, constituency]);
 
   const getAddress = async () => {
     setIsError(false);
@@ -65,21 +69,26 @@ const Vote = () => {
           setIsAdmin(true);
           toast.info("Logged in as admin!");
         }
-        let found = false;
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].address.toLowerCase() == storeAddress) {
-            found = true;
-            break;
-          }
-        }
-        if (found) {
-          getVoted(storeAddress);
-        } else {
-          setIsRegistered(false);
-          toast.error(
-            "Error occured. Account address not linked with a valid voterID!"
-          );
-        }
+        const axiosConfig = {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+        axios
+          .post(
+            `/api/voter/checkVoter`,
+            { storeAddress: storeAddress },
+            axiosConfig
+          )
+          .then((res) => {
+            getVoted(storeAddress);
+          })
+          .catch((e) => {
+            setIsRegistered(false);
+            toast.error(
+              "Error occured. Account address not linked with a valid voterID!"
+            );
+          });
       }
     } catch (err) {
       setNoMetamask(true);
@@ -92,17 +101,34 @@ const Vote = () => {
       const voted = await election.methods.voters(storeAddress).call();
       setHasVoted(voted);
     } catch (e) {
-      toast.error("An error occured. Please try again!");
+      toast.error("An error occured while loading data. Please try again!");
     }
   };
 
-  const getCandidateCount = async () => {
+  const getConstituencyDetails = () => {
+    const axiosConfig = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    axios
+      .get(`/api/vote/${id}`, axiosConfig)
+      .then((res) => {
+        setConstituency(res.data.constituency);
+        getCandidates(res.data.constituency);
+      })
+      .catch((e) => {
+        toast.error("An error occured while loading data. Try again!");
+      });
+  };
+
+  const getCandidates = async (constituencyData) => {
     try {
-      const count = await election.methods.candidatesCount().call();
-      setCandidatesCount(count);
       let candidateData = [];
-      for (var i = 1; i <= count; i++) {
-        const candidate = await election.methods.candidates(i).call();
+      for (var i = 0; i < constituencyData.candidateIds.length; i++) {
+        const candidate = await election.methods
+          .candidates(constituencyData.candidateIds[i])
+          .call();
         candidateData.push(candidate);
       }
       console.log(candidateData);
@@ -110,7 +136,7 @@ const Vote = () => {
       setEndPending(true);
     } catch (e) {
       setEndPending(true);
-      toast.error("An error occured. Please try again!");
+      toast.error("An error occured while loading data. Please try again!");
     }
   };
 
@@ -123,12 +149,15 @@ const Vote = () => {
         setName={setName}
         party={party}
         setParty={setParty}
+        constituency={constituency}
+        isAdmin={isAdmin}
       />
       <EditCandidateModal
         setLoadingEdit={setLoadingEdit}
         setIsReload={setIsReload}
         editCandidateInfo={editCandidateInfo}
       />
+      <PartyLogo partyLogo={partyLogo} />
       {!endPending && (
         <div className="pageLoading">
           <ReactLoading
@@ -142,6 +171,18 @@ const Vote = () => {
       {endPending && (
         <div className="container col-md-8 p-5">
           <VotePageHeader isAdmin={isAdmin} loadingAdd={loadingAdd} />
+          {candidatesDisplay && candidatesDisplay.length === 0 && (
+            <h3
+              style={{
+                textAlign: "center",
+                margin: "auto",
+                fontSize: 20,
+                fontWeight: 350,
+              }}
+            >
+              No candidates to show.
+            </h3>
+          )}
           {candidatesDisplay != "" && (
             <div className="candidateTable">
               <table
@@ -158,6 +199,9 @@ const Vote = () => {
                     </th>
                     <th className="voteTableHeader" scope="col">
                       Party
+                    </th>
+                    <th className="voteTableHeader" scope="col">
+                      Logo
                     </th>
                     <th className="voteTableHeader" scope="col">
                       Voter Count
@@ -177,6 +221,7 @@ const Vote = () => {
                     return (
                       <TableRow
                         candidate={candidate}
+                        index={i}
                         hasVoted={hasVoted}
                         isRegisteredVoter={isRegistered}
                         isNoAddressFound={isError}
@@ -187,12 +232,12 @@ const Vote = () => {
                         loadingEdit={loadingEdit}
                         isAdmin={isAdmin}
                         setEditCandidateInfo={setEditCandidateInfo}
+                        setPartyLogo={setPartyLogo}
                       />
                     );
                   })}
                 </tbody>
               </table>
-              <p>Found {candidatesCount} candidates.</p>
             </div>
           )}
         </div>

@@ -1,9 +1,9 @@
 import "./card.css";
+import axios from "axios";
 import { useState, useEffect } from "react";
 import Flippy, { FrontSide, BackSide } from "react-flippy";
 import web3 from "../../../../ethereum/web3";
 import Election from "../../../../ethereum/election";
-import data from "../../../../seeders/data";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 toast.configure();
@@ -42,22 +42,27 @@ const Card = () => {
           "Address not found. Please login into your Metamask account!"
         );
       } else {
-        let foundIndex = -1;
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].address.toLowerCase() == storeAddress) {
-            foundIndex = i;
-            break;
-          }
-        }
-        if (foundIndex != -1) {
-          setVoterDetails(data[foundIndex]);
-          getVoted(storeAddress);
-        } else {
-          setIsRegistered(false);
-          toast.error(
-            "An error occured. Account address not linked with a valid voterID!"
-          );
-        }
+        const axiosConfig = {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+        axios
+          .post(
+            `/api/voter/checkVoter`,
+            { storeAddress: storeAddress },
+            axiosConfig
+          )
+          .then((res) => {
+            setVoterDetails(res.data.voter);
+            getVoted(storeAddress);
+          })
+          .catch((e) => {
+            setIsRegistered(false);
+            toast.error(
+              "An error occured. Account address not linked with a valid voterID!"
+            );
+          });
       }
     } catch (err) {
       setNoMetamask(true);
@@ -111,6 +116,11 @@ const Card = () => {
                     <span style={{ color: "red" }}>Not Connected</span>
                   )}
                 </p>
+                <p className="card-text">
+                  <small style={{ color: "#fff" }}>
+                    Last updated 1 min ago
+                  </small>
+                </p>
               </FrontSide>
               <BackSide className="flippy-card-back">
                 <h5 className="card-title" style={{ color: "#4b8ef1" }}>
@@ -124,7 +134,7 @@ const Card = () => {
                     Voter ID :{" "}
                   </span>
                   {!noMetamask && !isError && isRegistered ? (
-                    voterDetails.voterID
+                    voterDetails.voterId
                   ) : (
                     <span style={{ color: "red" }}>Not Connected</span>
                   )}
@@ -147,12 +157,22 @@ const Card = () => {
                     className="card-text-heading"
                     style={{ fontWeight: 550, color: "#4b8ef1" }}
                   >
+                    Constituency name :{" "}
+                  </span>
+                  {!noMetamask && !isError && isRegistered ? (
+                    voterDetails.constituency
+                  ) : (
+                    <span style={{ color: "red" }}>Not Connected</span>
+                  )}
+                </p>
+                <p className="card-text">
+                  <span
+                    className="card-text-heading"
+                    style={{ fontWeight: 550, color: "#4b8ef1" }}
+                  >
                     Voted :{" "}
                   </span>
                   {"" + hasVoted}
-                </p>
-                <p className="card-text">
-                  <small class="text-muted">Last updated 1 min ago</small>
                 </p>
               </BackSide>
             </Flippy>

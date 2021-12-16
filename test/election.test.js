@@ -23,17 +23,26 @@ describe("Election", () => {
   it("deploys election contract and initializes with six initial given values of candidates", async () => {
     assert.ok(election.options.address);
     const count = await election.methods.candidatesCount().call();
-    assert.equal(count, 6);
+    assert.equal(count, 5);
   });
 
   it("initializes the given candidates with the correct values", async () => {
-    candidateInfo = await election.methods.candidates(6).call();
-    assert.equal(candidateInfo.id, 6, "contains the correct id");
-    assert.equal(candidateInfo.name, "NOTA", "contains the correct name");
+    candidateInfo = await election.methods.candidates(5).call();
+    assert.equal(candidateInfo.id, 5, "contains the correct id");
+    assert.equal(
+      candidateInfo.name,
+      "Sudip Mandal",
+      "contains the correct name"
+    );
     assert.equal(
       candidateInfo.party,
-      "None of the above",
+      "Bahujan Samaj Party",
       "contains the correct party"
+    );
+    assert.equal(
+      candidateInfo.constituency,
+      "Monera",
+      "contains correct constituency"
     );
     assert.equal(
       candidateInfo.voteCount,
@@ -43,12 +52,12 @@ describe("Election", () => {
   });
 
   it("adds and edits a new candidate by admin", async () => {
-    await election.methods.addCandidate("Modi", "BJP").send({
+    await election.methods.addCandidate("Modi", "BJP", "Monera").send({
       from: accounts[0],
       gas: "1000000",
     });
-    candidateInfo = await election.methods.candidates(7).call();
-    assert.equal(candidateInfo.id, 7, "contains correct id");
+    candidateInfo = await election.methods.candidates(6).call();
+    assert.equal(candidateInfo.id, 6, "contains correct id");
     assert.equal(candidateInfo.name, "Modi", "contains correct name");
     assert.equal(candidateInfo.party, "BJP", "contains the correct party");
     assert.equal(
@@ -56,12 +65,12 @@ describe("Election", () => {
       0,
       "contains the correct votes count"
     );
-    await election.methods.editCandidate(7, "Vartika", "Congress").send({
+    await election.methods.editCandidate(6, "Vartika", "Congress").send({
       from: accounts[0],
       gas: "1000000",
     });
-    candidateInfo = await election.methods.candidates(7).call();
-    assert.equal(candidateInfo.id, 7, "contains correct id");
+    candidateInfo = await election.methods.candidates(6).call();
+    assert.equal(candidateInfo.id, 6, "contains correct id");
     assert.equal(candidateInfo.name, "Vartika", "contains correct name");
     assert.equal(candidateInfo.party, "Congress", "contains the correct party");
     assert.equal(

@@ -6,6 +6,7 @@ contract Election {
         uint256 id;
         string name;
         string party;
+        string constituency;
         uint256 voteCount;
     }
     mapping(address => bool) public voters; //accounts which have voted already
@@ -20,12 +21,19 @@ contract Election {
     //Constructor function
     constructor() public {
         manager = msg.sender;
-        addCandidate("Amar Singh Rai", "All India Trinamool Congress");
-        addCandidate("Raju Bista", "Bharatiya Janata Party");
-        addCandidate("Saman Pathak", "Communist Party Of India (Marxist)");
-        addCandidate("Sankar Malakar", "Indian National Congress");
-        addCandidate("Sudip Mandal", "Bahujan Samaj Party");
-        addCandidate("NOTA", "None of the above");
+        // addCandidate(
+        //     "Amar Singh Rai",
+        //     "All India Trinamool Congress",
+        //     "Vijaypur"
+        // );
+        // addCandidate("Raju Bista", "Bharatiya Janata Party", "Vijaypur");
+        // addCandidate(
+        //     "Saman Pathak",
+        //     "Communist Party Of India (Marxist)",
+        //     "Sabalgarh"
+        // );
+        // addCandidate("Sankar Malakar", "Indian National Congress", "Sabalgarh");
+        // addCandidate("Sudip Mandal", "Bahujan Samaj Party", "Morena");
     }
 
     modifier admin() //function modifier, to reduce the amount of code that we'll write; think of this as a macro
@@ -34,15 +42,17 @@ contract Election {
         _;
     }
 
-    function addCandidate(string memory name, string memory party)
-        public
-        admin
-    {
+    function addCandidate(
+        string memory name,
+        string memory party,
+        string memory constituency
+    ) public admin {
         candidatesCount++;
         candidates[candidatesCount] = Candidate(
             candidatesCount,
             name,
             party,
+            constituency,
             0
         );
     }

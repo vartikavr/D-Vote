@@ -1,4 +1,5 @@
 import "./tableRow.css";
+import axios from "axios";
 import Election from "../../../../../ethereum/election";
 import web3 from "../../../../../ethereum/web3";
 import { toast } from "react-toastify";
@@ -7,6 +8,7 @@ toast.configure();
 
 const TableRow = ({
   hasVoted,
+  index,
   candidate,
   noMetamask,
   isRegisteredVoter,
@@ -17,6 +19,7 @@ const TableRow = ({
   loadingEdit,
   isAdmin,
   setEditCandidateInfo,
+  setPartyLogo,
 }) => {
   const election = Election(process.env.REACT_APP_ADDRESS);
 
@@ -48,11 +51,42 @@ const TableRow = ({
     }
   };
 
+  const getPartyLogo = () => {
+    try {
+      setPartyLogo("");
+      const axiosConfig = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      axios
+        .post("/api/party/i", { partyName: candidate.party }, axiosConfig)
+        .then((res) => {
+          setPartyLogo(res.data.party.partyLogo);
+        })
+        .catch((e) => {
+          toast.error("An error occured while loading data. Try again!");
+        });
+    } catch (e) {
+      toast.error("Error in getting party logo!");
+    }
+  };
+
   return (
     <tr>
-      <th scope="row">{candidate.id}</th>
+      <th scope="row">{index + 1}</th>
       <th>{candidate.name}</th>
       <th>{candidate.party}</th>
+      <th>
+        <button
+          className="party-logo"
+          data-toggle="modal"
+          data-target="#partyLogoModalCenter"
+          onClick={getPartyLogo}
+        >
+          Logo
+        </button>
+      </th>
       <th>{candidate.voteCount}</th>
       <th>
         {hasVoted || noMetamask || isNoAddressFound || !isRegisteredVoter ? (

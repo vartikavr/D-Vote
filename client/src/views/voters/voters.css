@@ -1,0 +1,46 @@
+.allVoters .card {
+  background-color: #c2d7f7;
+}
+
+.btn-addVoter {
+  padding: 5px 150px;
+  margin: 30px auto;
+  display: block;
+  font-size: 1em;
+  border-radius: 20px;
+  border: 2px solid #4b8ef1;
+  color: #4b8ef1;
+  font-weight: 600;
+  outline: none;
+  background: transparent;
+}
+
+.btn-addVoter:hover {
+  transform: translateY(-2px);
+  background-color: #4b8ef1;
+  color: #fff;
+}
+
+.btn-addVoter:focus {
+  outline: none;
+}
+
+.btn-addVoterLoading {
+  padding: 5px 150px;
+  margin: 30px auto;
+  display: block;
+  font-size: 1em;
+  border-radius: 20px;
+  border: 2px solid #4b8ef1;
+  font-weight: 600;
+  background-color: #4b8ef1;
+  color: #fff;
+}
+
+.float-child {
+  float: left;
+}
+
+.float-child.delete {
+  margin-left: 8em;
+}

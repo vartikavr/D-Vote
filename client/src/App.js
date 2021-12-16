@@ -4,6 +4,9 @@ import Navbar from "./views/navbar/navbar";
 import Working from "./views/working/working";
 import Card from "./views/card/card";
 import Vote from "./views/vote/vote/vote";
+import Constituency from "./views/constituency/constituency/constituency";
+import Voters from "./views/voters/voters";
+import Parties from "./views/parties/parties";
 
 function App() {
   return (
@@ -22,7 +25,19 @@ function App() {
         </Route>
         <Route exact path="/vote">
           <Navbar />
+          <Constituency />
+        </Route>
+        <Route exact path="/:id/vote">
+          <Navbar />
           <Vote />
+        </Route>
+        <Route exact path="/voters">
+          <Navbar />
+          <Voters />
+        </Route>
+        <Route exact path="/parties">
+          <Navbar />
+          <Parties />
         </Route>
       </Switch>
     </Router>

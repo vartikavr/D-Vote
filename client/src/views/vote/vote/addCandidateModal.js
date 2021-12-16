@@ -1,5 +1,7 @@
 import Election from "../../../../../ethereum/election";
 import web3 from "../../../../../ethereum/web3";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 toast.configure();
@@ -11,22 +13,69 @@ const AddCandidateModal = ({
   setName,
   party,
   setParty,
+  constituency,
+  isAdmin,
 }) => {
   const election = Election(process.env.REACT_APP_ADDRESS);
+  const { id } = useParams();
+
   const handleAddCandidate = async () => {
     setLoadingAdd(true);
     setIsReload(false);
     try {
-      const accounts = await web3.eth.getAccounts();
-      await election.methods.addCandidate(name, party).send({
-        from: accounts[0],
-      });
+      let isValidParty;
+      const axiosConfig = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      axios
+        .post("/api/party/candidate", { party: party }, axiosConfig)
+        .then((res) => {
+          isValidParty = true;
+        })
+        .catch((e) => {
+          if (e.response.data.isValidParty === false) {
+            isValidParty = false;
+            toast.error("Entered party is not a valid party!");
+          }
+        });
+      console.log(isValidParty);
+      if (isValidParty) {
+        const accounts = await web3.eth.getAccounts();
+        await election.methods
+          .addCandidate(name, party, constituency.name)
+          .send({
+            from: accounts[0],
+          });
+        const candidateId = await election.methods.candidatesCount().call();
+        //add candidateId into its constituency record in backend
+        const axiosConfig = {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+        axios
+          .post(
+            `/api/vote/${id}/add`,
+            { isAdmin: isAdmin, candidateId: candidateId },
+            axiosConfig
+          )
+          .then((res) => {
+            setLoadingAdd(false);
+            setIsReload(true);
+            toast.success("Candidate added successfully!");
+          })
+          .catch((e) => {
+            setLoadingAdd(false);
+            toast.error("An error occured. Try again!");
+          });
+      } else {
+        setLoadingAdd(false);
+      }
+    } catch (e) {
       setLoadingAdd(false);
-      toast.success("Candidate added successfully!");
-      setIsReload(true);
-    } catch (err) {
-      setLoadingAdd(false);
-      toast.error(`An error occured! ${err.message}`);
+      toast.error("An error occured. Try again!");
     }
   };
 

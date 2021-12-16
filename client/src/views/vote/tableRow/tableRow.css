@@ -35,3 +35,20 @@
   border: 1px solid #fff;
   outline: none;
 }
+
+.party-logo {
+  border-radius: 10px;
+  background-color: #fff;
+  color: #4b8ef1;
+  border: 2px solid #4b8ef1;
+  padding: 2px 5px;
+}
+
+.party-logo:hover {
+  background-color: #4b8ef1;
+  color: #fff;
+}
+
+.party-logo:focus {
+  outline: none;
+}

@@ -1,7 +1,32 @@
+import { useEffect, useState } from "react";
+import web3 from "../../../../ethereum/web3";
 import "./navbar.css";
+
 const Navbar = () => {
   const url = window.location.pathname;
   console.log(url);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    checkIfAdmin();
+  }, []);
+
+  const checkIfAdmin = async (req, res) => {
+    try {
+      const storeAddress = await web3.eth.getCoinbase((err, coinbase) => {
+        console.log(coinbase);
+      });
+      if (storeAddress !== undefined) {
+        if (
+          process.env.REACT_APP_ADMIN_ADDRESS.toLowerCase() === storeAddress
+        ) {
+          setIsAdmin(true);
+        }
+      }
+    } catch (err) {
+      console.log("An error occured while checking for admin");
+    }
+  };
 
   return (
     <div className="header-navbar">
@@ -31,6 +56,28 @@ const Navbar = () => {
                 Home
               </a>
             </div>
+            {isAdmin && (
+              <div className="navbar-nav">
+                <a
+                  className={`nav-item ${url == "/voters" ? " active" : ""}`}
+                  aria-current="page"
+                  href="/voters"
+                >
+                  Voters
+                </a>
+              </div>
+            )}
+            {isAdmin && (
+              <div className="navbar-nav">
+                <a
+                  className={`nav-item ${url == "/parties" ? " active" : ""}`}
+                  aria-current="page"
+                  href="/parties"
+                >
+                  Parties
+                </a>
+              </div>
+            )}
             <div className="navbar-nav ms-auto">
               <a
                 className={`nav-item d-block ${

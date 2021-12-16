@@ -1,0 +1,106 @@
+/*--------Constituencies-----*/
+.pageLoading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.constituency {
+  padding-top: 2em;
+}
+
+.constituencyHeading {
+  font-family: "Raleway", sans-serif;
+}
+
+.Constituencies.card {
+  background-color: #92b9f3;
+  color: #ffffff;
+}
+
+.Constituencies {
+  font-family: "Raleway", sans-serif;
+  font-size: 2.3em;
+  padding-right: 2em;
+  padding-left: 2em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.Constituencies .card-head {
+  display: flex;
+  justify-content: space-between;
+}
+
+.constituency .icon-box {
+  padding: 30px;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  transition: all 0.3s ease-in-out;
+  border-radius: 15px;
+  text-align: center;
+  cursor: pointer;
+  margin: 2em;
+  border: 1px solid #4b8ef1;
+  height: 180px;
+  width: 100vw;
+}
+
+.constituency .icon-box:hover {
+  transform: translateY(-5px);
+  border-color: #4b8ef1;
+}
+
+.constituency .icon-box h4 {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 1.3em;
+}
+
+.constituency .icon i {
+  font-size: 48px;
+  line-height: 1;
+  margin-bottom: 15px;
+  color: #4b8ef1;
+}
+
+.btn-addConstituency {
+  padding: 5px 150px;
+  margin: 30px auto;
+  margin-bottom: 0;
+  display: block;
+  font-size: 1em;
+  border-radius: 20px;
+  border: 2px solid #4b8ef1;
+  color: #4b8ef1;
+  font-weight: 600;
+  outline: none;
+  background: transparent;
+}
+
+.btn-addConstituency:hover {
+  transform: translateY(-2px);
+  background-color: #4b8ef1;
+  color: #fff;
+}
+
+.btn-addConstituency:focus {
+  outline: none;
+}
+
+.btn-addConstituencyLoading {
+  padding: 5px 150px;
+  margin: 30px auto;
+  margin-bottom: 0;
+  display: block;
+  font-size: 1em;
+  border-radius: 20px;
+  border: 2px solid #4b8ef1;
+  font-weight: 600;
+  background-color: #4b8ef1;
+  color: #fff;
+}
