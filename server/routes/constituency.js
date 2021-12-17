@@ -10,6 +10,8 @@ router.post("/add", constituency.addConstituency);
 
 router.post("/:id/add", constituency.newCandidateAdded);
 
+router.post("/edit", constituency.editConstituencyWinnerParty);
+
 router.post("/:id/delete", constituency.deleteConstituency);
 
 module.exports = router;

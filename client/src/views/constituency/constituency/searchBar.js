@@ -10,7 +10,7 @@ const Searchbar = ({ searchValue, changeSearchValue }) => {
         id="search"
         name="search"
         autoComplete="off"
-        placeholder="search by subject .."
+        placeholder="search by constituency name .."
         value={searchValue}
         onChange={(event) => changeSearchValue(event.target.value)}
       />

@@ -42,5 +42,7 @@
 }
 
 .float-child.delete {
-  margin-left: 8em;
+  float: right;
+  margin-top: 2em;
+  margin-right: 5em;
 }

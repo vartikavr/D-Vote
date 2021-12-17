@@ -11,6 +11,7 @@ const partySchema = new mongoose.Schema({
   },
   constituenciesWon: {
     type: Number,
+    default: 0,
   },
 });
 

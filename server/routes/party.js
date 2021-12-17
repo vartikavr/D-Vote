@@ -8,6 +8,8 @@ router.post("/i", party.getSpecificParty);
 
 router.post("/add", party.addParty);
 
+router.post("/edit", party.updatePartyWonCount);
+
 router.post("/candidate", party.checkIsValidParty);
 
 module.exports = router;

@@ -145,8 +145,7 @@ const Home = () => {
                 <h4>View votes</h4>
                 <p>
                   To ensure transparent and untampered voting, each user can see
-                  the current count of votes of each candidate on{" "}
-                  <Link to="/vote">Voting Page</Link>.
+                  the current count of votes of each candidate.
                 </p>
               </div>
             </div>

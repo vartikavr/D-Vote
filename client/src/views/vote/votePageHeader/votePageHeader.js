@@ -1,7 +1,7 @@
 import "./votePageHeader.css";
 import { Link } from "react-router-dom";
 
-const VotePageHeader = ({ isAdmin, loadingAdd }) => {
+const VotePageHeader = ({ isAdmin, loadingAdd, electionStarted }) => {
   return (
     <div className="votePageHeader">
       <h2 style={{ color: "#4b8ef1" }}>Cast Your Vote</h2>
@@ -32,7 +32,7 @@ const VotePageHeader = ({ isAdmin, loadingAdd }) => {
           )}
         </ul>
       </div>
-      {isAdmin && !loadingAdd && (
+      {isAdmin && !loadingAdd && !electionStarted && (
         <button
           className="btn-addCandidate"
           data-toggle="modal"
@@ -41,7 +41,7 @@ const VotePageHeader = ({ isAdmin, loadingAdd }) => {
           Add Candidate
         </button>
       )}
-      {isAdmin && loadingAdd && (
+      {isAdmin && loadingAdd && !electionStarted && (
         <div className="voting-btn">
           <button className="btn-addCandidateLoading" disabled>
             <span

@@ -21,7 +21,9 @@ const Constituency = () => {
   const [endPending, setEndPending] = useState(false);
   const [isAddingConstituency, setIsAddingConstituency] = useState(false);
   const [isChange, setIsChange] = useState(false); //for changes like adding constituency
-  const election = Election(process.env.REACT_APP_ADDRESS);
+  const [electionStarted, setElectionStarted] = useState(false);
+  const [electionEnded, setElectionEnded] = useState(false);
+  const [winnerParty, setWinnerParty] = useState(null);
 
   useEffect(() => {
     getConstituencies();
@@ -41,6 +43,9 @@ const Constituency = () => {
       .get("/api/vote", {}, axiosConfig)
       .then((res) => {
         setAllConstituencies(res.data.constituencies);
+        setElectionStarted(res.data.startElection);
+        setElectionEnded(res.data.endElection);
+        setWinnerParty(res.data.winnerParty);
         console.log(res.data.constituencies);
         setEndPending(true);
       })
@@ -96,8 +101,14 @@ const Constituency = () => {
       {endPending && (
         <div className="col-sm-8 offset-sm-2">
           <div className="containerConstituency">
-            <ConstituencyHeader isAdmin={isAdmin} openDropdown={openDropdown} />
-            {isAdmin && !isAddingConstituency && (
+            <ConstituencyHeader
+              isAdmin={isAdmin}
+              openDropdown={openDropdown}
+              electionStarted={electionStarted}
+              setIsChange={setIsChange}
+              electionEnded={electionEnded}
+            />
+            {isAdmin && !electionStarted && !isAddingConstituency && (
               <div className="constituency-btn">
                 <button
                   className="btn-addConstituency"
@@ -108,7 +119,7 @@ const Constituency = () => {
                 </button>
               </div>
             )}
-            {isAdmin && isAddingConstituency && (
+            {isAdmin && !electionStarted && isAddingConstituency && (
               <div className="constituency-btn">
                 <button className="btn-addConstituencyLoading" disabled>
                   <span
@@ -120,17 +131,35 @@ const Constituency = () => {
                 </button>
               </div>
             )}
-            {/* {global.startElection && (
-              <p style={{ textAlign: "center", fontWeight: 200 }}>
+            <Searchbar searchValue={search} changeSearchValue={setSearch} />
+            {electionStarted && !electionEnded && (
+              <p
+                className="mt-2"
+                style={{ textAlign: "center", fontWeight: 700 }}
+              >
                 The election has started.
               </p>
             )}
-            {global.endElection && (
-              <p style={{ textAlign: "center", fontWeight: 200 }}>
-                The election has ended.
+            {!electionStarted && !electionEnded && (
+              <p
+                className="mt-2"
+                style={{ textAlign: "center", fontWeight: 700 }}
+              >
+                The election has not yet started.
               </p>
-            )} */}
-            <Searchbar searchValue={search} changeSearchValue={setSearch} />
+            )}
+            {electionEnded && (
+              <p style={{ textAlign: "center", fontWeight: 700 }}>
+                The election has ended.
+                <br />
+                {winnerParty && (
+                  <span>{winnerParty} won the election by majority.</span>
+                )}
+                {!winnerParty && (
+                  <span>No party won by majority. Alliances are expected.</span>
+                )}
+              </p>
+            )}
             <div className="row">
               {allConstituencies &&
                 allConstituencies.map((constituency) =>
@@ -162,6 +191,7 @@ const Constituency = () => {
                             isAdmin={isAdmin}
                             constituencyId={constituency._id}
                             setIsChange={setIsChange}
+                            electionStarted={electionStarted}
                           />
                         )}
                       </div>

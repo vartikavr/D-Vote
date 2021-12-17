@@ -109,11 +109,22 @@ const Working = () => {
               Browser Extension.
             </p>
             <p>
-              2. Make sure you've imported that Ethereum account, which you've
+              2. Create an account or import an existing one on Metamask. Refer{" "}
+              <a
+                href="https://www.youtube.com/watch?v=GNPz-Dv5BjM"
+                target="_blank"
+              >
+                this
+              </a>{" "}
+              video for more help or step-by-step guidance.
+            </p>
+            <p>
+              3. Make sure you've imported that Ethereum account, which you've
               been assigned by the commission, into MetaMask.
             </p>
             <p>
-              3. Visit the <a href="/vote">Vote Page</a> and cast your vote.
+              4. Visit the <a href="/vote">Vote Page</a> and cast your vote in
+              your constituency.
             </p>
             <p>
               Regards,

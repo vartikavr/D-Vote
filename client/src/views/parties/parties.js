@@ -16,6 +16,7 @@ const Parties = () => {
   const [isAddingParty, setIsAddingParty] = useState(false);
   const [isReload, setIsReload] = useState(false);
   const [partyLogo, setPartyLogo] = useState("");
+  const [electionStarted, setElectionStarted] = useState(false);
 
   useEffect(() => {
     checkIfAdmin();
@@ -31,7 +32,7 @@ const Parties = () => {
           process.env.REACT_APP_ADMIN_ADDRESS.toLowerCase() === storeAddress
         ) {
           setIsAdmin(true);
-          getAllParties(true);
+          getAllParties();
         } else {
           getAllParties(false);
         }
@@ -41,7 +42,7 @@ const Parties = () => {
     }
   };
 
-  const getAllParties = (admin) => {
+  const getAllParties = () => {
     try {
       const axiosConfig = {
         headers: {
@@ -49,9 +50,10 @@ const Parties = () => {
         },
       };
       axios
-        .post("/api/party", { isAdmin: admin }, axiosConfig)
+        .post("/api/party", {}, axiosConfig)
         .then((res) => {
           setAllParties(res.data.parties);
+          setElectionStarted(res.data.startElection);
           setEndPending(true);
         })
         .catch((e) => {
@@ -103,7 +105,7 @@ const Parties = () => {
               stand in the election.
             </p>
           </div>
-          {!isAddingParty && (
+          {!isAddingParty && !electionStarted && (
             <button
               className="btn-addParty"
               data-toggle="modal"
@@ -112,7 +114,7 @@ const Parties = () => {
               Add Party
             </button>
           )}
-          {isAddingParty && (
+          {isAddingParty && !electionStarted && (
             <button className="btn-addPartyLoading">
               <span
                 className="spinner-border spinner-border-sm"

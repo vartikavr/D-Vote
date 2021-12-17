@@ -20,6 +20,10 @@ const TableRow = ({
   isAdmin,
   setEditCandidateInfo,
   setPartyLogo,
+  electionStarted,
+  voterConstituency,
+  constituency,
+  electionEnded,
 }) => {
   const election = Election(process.env.REACT_APP_ADDRESS);
 
@@ -89,7 +93,13 @@ const TableRow = ({
       </th>
       <th>{candidate.voteCount}</th>
       <th>
-        {hasVoted || noMetamask || isNoAddressFound || !isRegisteredVoter ? (
+        {hasVoted ||
+        noMetamask ||
+        isNoAddressFound ||
+        !isRegisteredVoter ||
+        !electionStarted ||
+        voterConstituency != constituency ||
+        electionEnded ? (
           <button className="voteButtonDisabled" disabled>
             Vote
           </button>
@@ -119,12 +129,12 @@ const TableRow = ({
       </th>
       {isAdmin && (
         <th>
-          {candidate.voteCount > 0 && (
+          {(candidate.voteCount > 0 || electionStarted) && (
             <button className="editButtonDisabled" disabled>
               Edit
             </button>
           )}
-          {!loadingEdit && candidate.voteCount == 0 && (
+          {!loadingEdit && candidate.voteCount == 0 && !electionStarted && (
             <button
               id={candidate.id}
               className="editButton"
@@ -135,7 +145,7 @@ const TableRow = ({
               Edit
             </button>
           )}
-          {loadingEdit && candidate.voteCount == 0 && (
+          {loadingEdit && candidate.voteCount == 0 && !electionStarted && (
             <button className="editButtonLoading">
               <span
                 className="spinner-border spinner-border-sm"

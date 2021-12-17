@@ -4,7 +4,7 @@ module.exports.getAllVoters = async (req, res) => {
   try {
     if (req.body.isAdmin) {
       const voters = await Voter.find({}).sort({ name: 1 });
-      res.status(200).send({ voters });
+      res.status(200).send({ voters, startElection });
     } else {
       return res.status(403).send({ isAdmin: false });
     }
@@ -16,14 +16,18 @@ module.exports.getAllVoters = async (req, res) => {
 module.exports.addVoter = async (req, res) => {
   try {
     if (req.body.isAdmin) {
-      const newVoter = new Voter({
-        name: req.body.name,
-        voterId: req.body.voterId,
-        address: req.body.address,
-        constituency: req.body.constituency,
-      });
-      await newVoter.save();
-      return res.status(200).send({ success: "added voter!" });
+      if (!startElection) {
+        const newVoter = new Voter({
+          name: req.body.name,
+          voterId: req.body.voterId,
+          address: req.body.address,
+          constituency: req.body.constituency,
+        });
+        await newVoter.save();
+        return res.status(200).send({ success: "added voter!" });
+      } else {
+        return res.status(403).send({ hasElectionStarted: true });
+      }
     } else {
       return res.status(403).send({ isAdmin: false });
     }
@@ -35,12 +39,16 @@ module.exports.addVoter = async (req, res) => {
 module.exports.deleteVoter = async (req, res) => {
   try {
     if (req.body.isAdmin) {
-      if (req.body.hasNotVoted) {
-        const { id } = req.params;
-        await Voter.findByIdAndDelete(id);
-        return res.status(200).send({ success: "deleted voter!" });
+      if (!startElection) {
+        if (req.body.hasNotVoted) {
+          const { id } = req.params;
+          await Voter.findByIdAndDelete(id);
+          return res.status(200).send({ success: "deleted voter!" });
+        } else {
+          return res.status(403).send({ hasAlreadyVoted: true });
+        }
       } else {
-        return res.status(403).send({ hasAlreadyVoted: true });
+        return res.status(403).send({ hasElectionStarted: true });
       }
     } else {
       return res.status(403).send({ isAdmin: false });

@@ -5,7 +5,12 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 toast.configure();
 
-const DeleteConstituency = ({ isAdmin, constituencyId, setIsChange }) => {
+const DeleteConstituency = ({
+  isAdmin,
+  constituencyId,
+  setIsChange,
+  electionStarted,
+}) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeleteConstituency = async () => {
@@ -40,7 +45,7 @@ const DeleteConstituency = ({ isAdmin, constituencyId, setIsChange }) => {
   };
   return (
     <div className="deleteConstituency">
-      {!isDeleting && (
+      {!isDeleting && !electionStarted && (
         <button
           className="deleteConstituencyBtn"
           id={constituencyId}
@@ -49,7 +54,7 @@ const DeleteConstituency = ({ isAdmin, constituencyId, setIsChange }) => {
           Delete
         </button>
       )}
-      {isDeleting && (
+      {isDeleting && !electionStarted && (
         <button className="deleteConstituencyLoadingBtn">
           <span
             className="spinner-border spinner-border-sm"

@@ -35,6 +35,9 @@ const Vote = () => {
   const election = Election(process.env.REACT_APP_ADDRESS);
   const { id } = useParams();
   const [partyLogo, setPartyLogo] = useState("");
+  const [electionStarted, setElectionStarted] = useState(false);
+  const [electionEnded, setElectionEnded] = useState(false);
+  const [voterConstituency, setVoterConstituency] = useState("");
 
   useEffect(() => {
     getAddress();
@@ -81,6 +84,7 @@ const Vote = () => {
             axiosConfig
           )
           .then((res) => {
+            setVoterConstituency(res.data.voter.constituency);
             getVoted(storeAddress);
           })
           .catch((e) => {
@@ -115,6 +119,8 @@ const Vote = () => {
       .get(`/api/vote/${id}`, axiosConfig)
       .then((res) => {
         setConstituency(res.data.constituency);
+        setElectionStarted(res.data.startElection);
+        setElectionEnded(res.data.endElection);
         getCandidates(res.data.constituency);
       })
       .catch((e) => {
@@ -170,7 +176,23 @@ const Vote = () => {
       )}
       {endPending && (
         <div className="container col-md-8 p-5">
-          <VotePageHeader isAdmin={isAdmin} loadingAdd={loadingAdd} />
+          <VotePageHeader
+            isAdmin={isAdmin}
+            loadingAdd={loadingAdd}
+            electionStarted={electionStarted}
+          />
+          {electionEnded && (
+            <p
+              className="mt-2 mb-2"
+              style={{ textAlign: "center", fontWeight: 700 }}
+            >
+              The election has ended.
+              <br />
+              {constituency.winnerParty != "none" && (
+                <span>Constituency winner : {constituency.winnerParty}</span>
+              )}
+            </p>
+          )}
           {candidatesDisplay && candidatesDisplay.length === 0 && (
             <h3
               style={{
@@ -233,6 +255,10 @@ const Vote = () => {
                         isAdmin={isAdmin}
                         setEditCandidateInfo={setEditCandidateInfo}
                         setPartyLogo={setPartyLogo}
+                        electionStarted={electionStarted}
+                        voterConstituency={voterConstituency}
+                        constituency={constituency.name}
+                        electionEnded={electionEnded}
                       />
                     );
                   })}

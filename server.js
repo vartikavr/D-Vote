@@ -9,6 +9,8 @@ const morgan = require("morgan");
 const fileUpload = require("express-fileupload");
 const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
+const Constituency = require("./server/schemas/constituency");
+const Party = require("./server/schemas/party");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -33,6 +35,11 @@ app.use("/api/vote", constituencyRoutes); // for constituency routes
 app.use("/api/voter", voterRoutes); // for voter routes
 app.use("/api/party", partyRoutes); //for party routes
 
+//global variables
+global.startElection = false;
+global.endElection = false;
+global.winnerParty = null;
+
 //uploading party logo to cloudinary
 const removeTmp = (path) => {
   fs.unlink(path, (err) => {
@@ -56,6 +63,58 @@ app.post("/api/upload", async (req, res) => {
     );
   } catch (err) {
     return res.status(500).json({ msg: err.message });
+  }
+});
+
+app.post("/api/start", (req, res) => {
+  try {
+    if (req.body.isAdmin) {
+      startElection = true;
+      return res.status(200).send({ success: "Election Started!" });
+    } else {
+      return res.status(403).send({ isAdmin: false });
+    }
+  } catch (e) {
+    return res
+      .status(403)
+      .send({ error: "An error occured in starting election" });
+  }
+});
+
+app.post("/api/end", async (req, res) => {
+  try {
+    if (req.body.isAdmin) {
+      console.log("...");
+      const constituencies = await Constituency.find({});
+      // console.log(constituencies);
+      let winningBar = constituencies.length / 2;
+      console.log(winningBar);
+      let maxParty = "";
+      let maxWins = 0;
+      const parties = await Party.find({});
+      // console.log(parties);
+      for (let i = 0; i < parties.length; i++) {
+        if (parties[i].constituenciesWon > maxWins) {
+          console.log(parties[i].name);
+          maxWins = parties[i].constituenciesWon;
+          maxParty = parties[i].name;
+        }
+      }
+      if (maxWins > winningBar) {
+        console.log(maxParty);
+        winnerParty = maxParty;
+      }
+      console.log("---");
+      endElection = true;
+      return res.status(200).send({ success: "Election ended successfully!" });
+    } else {
+      return res.status(403).send({ isAdmin: false });
+    }
+  } catch (e) {
+    console.log(",,,,,");
+    return res
+      .status(403)
+      .send({ error: "An error occured in ending election" });
   }
 });
 

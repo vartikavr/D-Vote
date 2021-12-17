@@ -18,6 +18,7 @@ const Voters = () => {
   const [isReload, setIsReload] = useState(false);
   const [currentAddress, setCurrentAddress] = useState("");
   const election = Election(process.env.REACT_APP_ADDRESS);
+  const [electionStarted, setElectionStarted] = useState(false);
 
   useEffect(() => {
     checkIfAdmin();
@@ -55,6 +56,7 @@ const Voters = () => {
         .post("/api/voter", { isAdmin: admin }, axiosConfig)
         .then((res) => {
           setAllVoters(res.data.voters);
+          setElectionStarted(res.data.startElection);
           setEndPending(true);
         })
         .catch((e) => {
@@ -135,7 +137,7 @@ const Voters = () => {
               of these voters have been linked to their other voting details.
             </p>
           </div>
-          {!isAddingVoter && (
+          {!isAddingVoter && !electionStarted && (
             <button
               className="btn-addVoter"
               data-toggle="modal"
@@ -144,7 +146,7 @@ const Voters = () => {
               Add Voter
             </button>
           )}
-          {isAddingVoter && (
+          {isAddingVoter && !electionStarted && (
             <button className="btn-addVoterLoading">
               <span
                 className="spinner-border spinner-border-sm"
@@ -159,27 +161,29 @@ const Voters = () => {
               <div className="card mb-3">
                 <div className="row ms-2">
                   <div className="card-body float-container">
-                    <div className="float-child">
-                      <h5
-                        className="card-title"
-                        style={{
-                          color: "black",
-                          fontWeight: 200,
-                          fontSize: 27,
-                        }}
-                      >
-                        {voter.name}
-                      </h5>
-                      <p className="card-text">
-                        <b>VoterId: </b>
-                        {voter.voterId}
-                      </p>
-                      <p className="card-text">
-                        <b>Account address: </b>
-                        {voter.address}
-                      </p>
+                    <div className="leftCard col-6">
+                      <div className="float-child">
+                        <h5
+                          className="card-title"
+                          style={{
+                            color: "black",
+                            fontWeight: 200,
+                            fontSize: 27,
+                          }}
+                        >
+                          {voter.name}
+                        </h5>
+                        <p className="card-text">
+                          <b>VoterId: </b>
+                          {voter.voterId}
+                        </p>
+                        <p className="card-text">
+                          <b>Account address: </b>
+                          {voter.address}
+                        </p>
+                      </div>
                     </div>
-                    {!isDeletingVoter && (
+                    {!isDeletingVoter && !electionStarted && (
                       <div className="float-child delete">
                         <a
                           className="btn btn-danger"
@@ -190,7 +194,7 @@ const Voters = () => {
                         </a>
                       </div>
                     )}
-                    {isDeletingVoter && (
+                    {isDeletingVoter && !electionStarted && (
                       <div className="float-child delete">
                         <a className="btn btn-danger" disabled>
                           <span
