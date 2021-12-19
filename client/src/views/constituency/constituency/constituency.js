@@ -1,6 +1,5 @@
 import "./constituency.css";
 import { useState, useEffect } from "react";
-import Election from "../../../../../ethereum/election";
 import web3 from "../../../../../ethereum/web3";
 import axios from "axios";
 import ConstituencyHeader from "../constituencyHeader/constituencyHeader";
@@ -11,7 +10,9 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AddConstituencyModal from "../addConstituencyModal/addConstituencyModal";
 import DeleteConstituency from "./deleteConstituency";
+import ResultModal from "./resultModal";
 toast.configure();
+const bootstrap = (window.bootstrap = require("bootstrap"));
 require("dotenv").config();
 
 const Constituency = () => {
@@ -24,6 +25,7 @@ const Constituency = () => {
   const [electionStarted, setElectionStarted] = useState(false);
   const [electionEnded, setElectionEnded] = useState(false);
   const [winnerParty, setWinnerParty] = useState(null);
+  const [isEnding, setIsEnding] = useState(false);
 
   useEffect(() => {
     getConstituencies();
@@ -45,9 +47,21 @@ const Constituency = () => {
         setAllConstituencies(res.data.constituencies);
         setElectionStarted(res.data.startElection);
         setElectionEnded(res.data.endElection);
-        setWinnerParty(res.data.winnerParty);
-        console.log(res.data.constituencies);
+        setWinnerParty(res.data.party);
         setEndPending(true);
+        if (res.data.startElection && !res.data.endElection && !isEnding) {
+          toast.info("The election has started.");
+        }
+        if (!res.data.startElection && !res.data.endElection) {
+          toast.info("The election has not yet started.");
+        }
+        if (res.data.endElection) {
+          let resultModal = new bootstrap.Modal(
+            document.getElementById("resultModal"),
+            {}
+          );
+          resultModal.show();
+        }
       })
       .catch((e) => {
         toast.error("An error occured. Try again!");
@@ -88,6 +102,10 @@ const Constituency = () => {
         isAdmin={isAdmin}
         setIsChange={setIsChange}
       />
+      <ResultModal
+        winnerParty={winnerParty}
+        totalConstituencies={allConstituencies.length}
+      />
       {!endPending && (
         <div className="pageLoading">
           <ReactLoading
@@ -107,6 +125,8 @@ const Constituency = () => {
               electionStarted={electionStarted}
               setIsChange={setIsChange}
               electionEnded={electionEnded}
+              isEnding={isEnding}
+              setIsEnding={setIsEnding}
             />
             {isAdmin && !electionStarted && !isAddingConstituency && (
               <div className="constituency-btn">
@@ -132,34 +152,6 @@ const Constituency = () => {
               </div>
             )}
             <Searchbar searchValue={search} changeSearchValue={setSearch} />
-            {electionStarted && !electionEnded && (
-              <p
-                className="mt-2"
-                style={{ textAlign: "center", fontWeight: 700 }}
-              >
-                The election has started.
-              </p>
-            )}
-            {!electionStarted && !electionEnded && (
-              <p
-                className="mt-2"
-                style={{ textAlign: "center", fontWeight: 700 }}
-              >
-                The election has not yet started.
-              </p>
-            )}
-            {electionEnded && (
-              <p style={{ textAlign: "center", fontWeight: 700 }}>
-                The election has ended.
-                <br />
-                {winnerParty && (
-                  <span>{winnerParty} won the election by majority.</span>
-                )}
-                {!winnerParty && (
-                  <span>No party won by majority. Alliances are expected.</span>
-                )}
-              </p>
-            )}
             <div className="row">
               {allConstituencies &&
                 allConstituencies.map((constituency) =>

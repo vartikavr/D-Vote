@@ -34,8 +34,7 @@
 
 .constituency .menu-btn:focus {
   outline: none;
-  border-radius: 20px;
-  border: 1px solid white;
+  border: none;
 }
 
 .constituency .dropdown-menu-classroom {
@@ -71,4 +70,8 @@
 }
 .constituency .links:hover {
   background-color: rgb(216, 210, 210);
+}
+
+.constituency .links:focus {
+  outline: none;
 }

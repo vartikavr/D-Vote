@@ -1,11 +1,21 @@
 const Constituency = require("../schemas/constituency");
+const Party = require("../schemas/party");
 
 module.exports.getAllConstituencies = async (req, res) => {
   try {
     const constituencies = await Constituency.find({}).sort({ name: 1 });
-    return res
-      .status(200)
-      .send({ constituencies, startElection, endElection, winnerParty });
+    let party;
+    if (winnerParty != null) {
+      party = await Party.findOne({ name: winnerParty });
+    } else {
+      party = winnerParty;
+    }
+    return res.status(200).send({
+      constituencies,
+      startElection,
+      endElection,
+      party,
+    });
   } catch (e) {
     return res
       .status(403)

@@ -12,6 +12,8 @@ import VotePageHeader from "../votePageHeader/votePageHeader";
 import EditCandidateModal from "../tableRow/editCandidateModal";
 import { useParams } from "react-router-dom";
 import PartyLogo from "../../parties/partyLogo";
+import ResultModal from "./resultModal";
+const bootstrap = (window.bootstrap = require("bootstrap"));
 toast.configure();
 require("dotenv").config();
 
@@ -70,7 +72,7 @@ const Vote = () => {
           process.env.REACT_APP_ADMIN_ADDRESS.toLowerCase() === storeAddress
         ) {
           setIsAdmin(true);
-          toast.info("Logged in as admin!");
+          // toast.info("Logged in as admin!");
         }
         const axiosConfig = {
           headers: {
@@ -122,6 +124,13 @@ const Vote = () => {
         setElectionStarted(res.data.startElection);
         setElectionEnded(res.data.endElection);
         getCandidates(res.data.constituency);
+        if (res.data.endElection) {
+          let resultModal = new bootstrap.Modal(
+            document.getElementById("resultModal"),
+            {}
+          );
+          resultModal.show();
+        }
       })
       .catch((e) => {
         toast.error("An error occured while loading data. Try again!");
@@ -163,6 +172,7 @@ const Vote = () => {
         setIsReload={setIsReload}
         editCandidateInfo={editCandidateInfo}
       />
+      <ResultModal constituency={constituency} />
       <PartyLogo partyLogo={partyLogo} />
       {!endPending && (
         <div className="pageLoading">
@@ -181,18 +191,6 @@ const Vote = () => {
             loadingAdd={loadingAdd}
             electionStarted={electionStarted}
           />
-          {electionEnded && (
-            <p
-              className="mt-2 mb-2"
-              style={{ textAlign: "center", fontWeight: 700 }}
-            >
-              The election has ended.
-              <br />
-              {constituency.winnerParty != "none" && (
-                <span>Constituency winner : {constituency.winnerParty}</span>
-              )}
-            </p>
-          )}
           {candidatesDisplay && candidatesDisplay.length === 0 && (
             <h3
               style={{

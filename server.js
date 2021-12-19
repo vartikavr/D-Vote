@@ -84,34 +84,26 @@ app.post("/api/start", (req, res) => {
 app.post("/api/end", async (req, res) => {
   try {
     if (req.body.isAdmin) {
-      console.log("...");
       const constituencies = await Constituency.find({});
-      // console.log(constituencies);
       let winningBar = constituencies.length / 2;
-      console.log(winningBar);
       let maxParty = "";
       let maxWins = 0;
       const parties = await Party.find({});
-      // console.log(parties);
       for (let i = 0; i < parties.length; i++) {
         if (parties[i].constituenciesWon > maxWins) {
-          console.log(parties[i].name);
           maxWins = parties[i].constituenciesWon;
           maxParty = parties[i].name;
         }
       }
       if (maxWins > winningBar) {
-        console.log(maxParty);
         winnerParty = maxParty;
       }
-      console.log("---");
       endElection = true;
       return res.status(200).send({ success: "Election ended successfully!" });
     } else {
       return res.status(403).send({ isAdmin: false });
     }
   } catch (e) {
-    console.log(",,,,,");
     return res
       .status(403)
       .send({ error: "An error occured in ending election" });

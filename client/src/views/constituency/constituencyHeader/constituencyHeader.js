@@ -12,9 +12,10 @@ const ConstituencyHeader = ({
   electionStarted,
   setIsChange,
   electionEnded,
+  isEnding,
+  setIsEnding,
 }) => {
   const [isStarting, setIsStarting] = useState(false);
-  const [isEnding, setIsEnding] = useState(false);
   const election = Election(process.env.REACT_APP_ADDRESS);
 
   const handleStartElection = () => {
@@ -177,12 +178,12 @@ const ConstituencyHeader = ({
                 &nbsp;Starting
               </button>
             )}
-            {!isEnding && !electionEnded && (
+            {electionStarted && !isEnding && !electionEnded && (
               <button className="links" onClick={handleEndElection}>
                 End Election
               </button>
             )}
-            {isEnding && !electionEnded && (
+            {electionStarted && isEnding && !electionEnded && (
               <button className="links">
                 <span
                   className="spinner-border spinner-border-sm"
