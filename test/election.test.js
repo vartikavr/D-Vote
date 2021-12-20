@@ -20,57 +20,42 @@ beforeEach(async () => {
 });
 
 describe("Election", () => {
-  it("deploys election contract and initializes with six initial given values of candidates", async () => {
+  it("deploys election contract", async () => {
     assert.ok(election.options.address);
-    const count = await election.methods.candidatesCount().call();
-    assert.equal(count, 5);
   });
 
-  it("initializes the given candidates with the correct values", async () => {
-    candidateInfo = await election.methods.candidates(5).call();
-    assert.equal(candidateInfo.id, 5, "contains the correct id");
-    assert.equal(
-      candidateInfo.name,
-      "Sudip Mandal",
-      "contains the correct name"
-    );
-    assert.equal(
-      candidateInfo.party,
-      "Bahujan Samaj Party",
-      "contains the correct party"
-    );
-    assert.equal(
-      candidateInfo.constituency,
-      "Monera",
-      "contains correct constituency"
-    );
-    assert.equal(
-      candidateInfo.voteCount,
-      0,
-      "contains the correct votes count"
-    );
+  it("doesn't allow a voter who is not an admin to add candidate", async () => {
+    try {
+      await election.methods.addCandidate("Suman Sharma", "BSP", "Bhind").send({
+        from: accounts[2],
+        gas: "1000000",
+      });
+      assert(false);
+    } catch (err) {
+      assert(err);
+    }
   });
 
   it("adds and edits a new candidate by admin", async () => {
-    await election.methods.addCandidate("Modi", "BJP", "Monera").send({
+    await election.methods.addCandidate("N. Modi", "BJP", "Monera").send({
       from: accounts[0],
       gas: "1000000",
     });
-    candidateInfo = await election.methods.candidates(6).call();
-    assert.equal(candidateInfo.id, 6, "contains correct id");
-    assert.equal(candidateInfo.name, "Modi", "contains correct name");
+    candidateInfo = await election.methods.candidates(1).call();
+    assert.equal(candidateInfo.id, 1, "contains correct id");
+    assert.equal(candidateInfo.name, "N. Modi", "contains correct name");
     assert.equal(candidateInfo.party, "BJP", "contains the correct party");
     assert.equal(
       candidateInfo.voteCount,
       0,
       "contains the correct votes count"
     );
-    await election.methods.editCandidate(6, "Vartika", "Congress").send({
+    await election.methods.editCandidate(1, "Vartika", "Congress").send({
       from: accounts[0],
       gas: "1000000",
     });
-    candidateInfo = await election.methods.candidates(6).call();
-    assert.equal(candidateInfo.id, 6, "contains correct id");
+    candidateInfo = await election.methods.candidates(1).call();
+    assert.equal(candidateInfo.id, 1, "contains correct id");
     assert.equal(candidateInfo.name, "Vartika", "contains correct name");
     assert.equal(candidateInfo.party, "Congress", "contains the correct party");
     assert.equal(
@@ -81,14 +66,24 @@ describe("Election", () => {
   });
 
   it("allows a voter to cast a vote", async () => {
+    await election.methods.addCandidate("N. Modi", "BJP", "Monera").send({
+      from: accounts[0],
+      gas: "1000000",
+    });
+    await election.methods
+      .addCandidate("Yogesh Kumar", "BSP", "Vijaypur")
+      .send({
+        from: accounts[0],
+        gas: "1000000",
+      });
     hasVoted = await election.methods.voters(accounts[1]).call();
     assert.equal(hasVoted, false, "not voted yet");
-    await election.methods.vote(3).send({
+    await election.methods.vote(2).send({
       from: accounts[1],
     });
     hasVoted = await election.methods.voters(accounts[1]).call();
     assert.equal(hasVoted, true, "successfully voted");
-    candidateInfo = await election.methods.candidates(3).call();
+    candidateInfo = await election.methods.candidates(2).call();
     assert.equal(
       candidateInfo.voteCount,
       1,
@@ -108,11 +103,21 @@ describe("Election", () => {
   });
 
   it("doesn't allow multiple voting by same voter", async () => {
-    await election.methods.vote(5).send({
+    await election.methods.addCandidate("N. Modi", "BJP", "Monera").send({
+      from: accounts[0],
+      gas: "1000000",
+    });
+    await election.methods
+      .addCandidate("Yogesh Kumar", "BSP", "Vijaypur")
+      .send({
+        from: accounts[0],
+        gas: "1000000",
+      });
+    await election.methods.vote(1).send({
       from: accounts[1],
     });
     try {
-      await election.methods.vote(1).send({
+      await election.methods.vote(2).send({
         from: accounts[1],
       });
       assert(false);

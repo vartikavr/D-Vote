@@ -20,6 +20,7 @@ const AddVoterModal = ({ setIsReload, setIsAddingVoter, isAdmin }) => {
 
   const handleAddVoter = () => {
     setIsAddingVoter(false);
+    setIsReload(false);
     try {
       setIsAddingVoter(true);
       const axiosConfig = {

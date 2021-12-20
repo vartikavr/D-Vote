@@ -112,8 +112,9 @@ const Home = () => {
                 <div class="icon"></div>
                 <h4>Show Voter Details</h4>
                 <p>
-                  Voter details can be seen and checked from the{" "}
-                  <Link to="/my-card">My Card</Link> page.
+                  A voter can see or check their details (connected account
+                  address and more) from the <Link to="/my-card">My Card</Link>{" "}
+                  page.
                 </p>
               </div>
             </div>
@@ -135,7 +136,7 @@ const Home = () => {
                 <h4>Cast Vote</h4>
                 <p>
                   A valid voter is allowed to cast vote to their choice of
-                  candidate.
+                  candidate from their constituency.
                 </p>
               </div>
             </div>
@@ -144,8 +145,8 @@ const Home = () => {
                 <div class="icon"></div>
                 <h4>View votes</h4>
                 <p>
-                  To ensure transparent and untampered voting, each user can see
-                  the current count of votes of each candidate.
+                  To ensure transparent and untampered voting, each voter can
+                  see the current count of votes of each candidate.
                 </p>
               </div>
             </div>

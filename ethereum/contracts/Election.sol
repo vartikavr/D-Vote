@@ -21,19 +21,6 @@ contract Election {
     //Constructor function
     constructor() public {
         manager = msg.sender;
-        // addCandidate(
-        //     "Amar Singh Rai",
-        //     "All India Trinamool Congress",
-        //     "Vijaypur"
-        // );
-        // addCandidate("Raju Bista", "Bharatiya Janata Party", "Vijaypur");
-        // addCandidate(
-        //     "Saman Pathak",
-        //     "Communist Party Of India (Marxist)",
-        //     "Sabalgarh"
-        // );
-        // addCandidate("Sankar Malakar", "Indian National Congress", "Sabalgarh");
-        // addCandidate("Sudip Mandal", "Bahujan Samaj Party", "Morena");
     }
 
     modifier admin() //function modifier, to reduce the amount of code that we'll write; think of this as a macro

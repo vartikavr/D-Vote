@@ -44,6 +44,7 @@ const AddPartyModal = ({ setIsReload, setIsAddingParty, isAdmin }) => {
     if (!name) toast.error("Party name not added in details!");
     if (!image) toast.error("Party logo not added in details!");
     setIsAddingParty(false);
+    setIsReload(false);
     try {
       setIsAddingParty(true);
       const axiosConfig = {

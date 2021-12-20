@@ -1,4 +1,5 @@
 import Election from "../../../../../ethereum/election";
+import axios from "axios";
 import web3 from "../../../../../ethereum/web3";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -23,15 +24,43 @@ const EditCandidateModal = ({
     setEditName(editCandidateInfo.name);
     setEditParty(editCandidateInfo.party);
   };
+
+  const checkEditCandidate = async () => {
+    setLoadingEdit(true);
+    setIsReload(false);
+    try {
+      const axiosConfig = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      axios
+        .post("/api/party/candidate", { party: editParty }, axiosConfig)
+        .then((res) => {
+          handleEditCandidate();
+        })
+        .catch((e) => {
+          if (e.response.data.isValidParty === false) {
+            toast.error(
+              "An error occured. Entered party is not a valid party!"
+            );
+            setLoadingEdit(false);
+          }
+        });
+    } catch (e) {
+      setLoadingEdit(false);
+      toast.error("An error occured. Try again!");
+    }
+  };
+
   const handleEditCandidate = async () => {
     if (
       editName === editCandidateInfo.name &&
       editParty === editCandidateInfo.party
     ) {
       toast.info("No changes required!");
+      setLoadingEdit(false);
     } else {
-      setLoadingEdit(true);
-      setIsReload(false);
       try {
         const accounts = await web3.eth.getAccounts();
         await election.methods
@@ -123,7 +152,7 @@ const EditCandidateModal = ({
               id="submitBtn"
               className="btn btn-primary"
               data-dismiss="modal"
-              onClick={handleEditCandidate}
+              onClick={checkEditCandidate}
             >
               Submit
             </button>

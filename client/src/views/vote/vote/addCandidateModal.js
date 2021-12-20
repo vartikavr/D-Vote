@@ -19,11 +19,10 @@ const AddCandidateModal = ({
   const election = Election(process.env.REACT_APP_ADDRESS);
   const { id } = useParams();
 
-  const handleAddCandidate = async () => {
+  const checkAddCandidate = async () => {
     setLoadingAdd(true);
     setIsReload(false);
     try {
-      let isValidParty;
       const axiosConfig = {
         headers: {
           "Content-Type": "application/json",
@@ -32,50 +31,55 @@ const AddCandidateModal = ({
       axios
         .post("/api/party/candidate", { party: party }, axiosConfig)
         .then((res) => {
-          isValidParty = true;
+          handleAddCandidate();
         })
         .catch((e) => {
           if (e.response.data.isValidParty === false) {
-            isValidParty = false;
-            toast.error("Entered party is not a valid party!");
+            toast.error(
+              "An error occured. Entered party is not a valid party!"
+            );
+            setLoadingAdd(false);
           }
         });
-      console.log(isValidParty);
-      if (isValidParty) {
-        const accounts = await web3.eth.getAccounts();
-        await election.methods
-          .addCandidate(name, party, constituency.name)
-          .send({
-            from: accounts[0],
-          });
-        const candidateId = await election.methods.candidatesCount().call();
-        //add candidateId into its constituency record in backend
-        const axiosConfig = {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        };
-        axios
-          .post(
-            `/api/vote/${id}/add`,
-            { isAdmin: isAdmin, candidateId: candidateId },
-            axiosConfig
-          )
-          .then((res) => {
-            setLoadingAdd(false);
-            setIsReload(true);
-            toast.success("Candidate added successfully!");
-          })
-          .catch((e) => {
-            setLoadingAdd(false);
-            toast.error("An error occured. Try again!");
-          });
-      } else {
-        setLoadingAdd(false);
-      }
     } catch (e) {
       setLoadingAdd(false);
       toast.error("An error occured. Try again!");
+    }
+  };
+
+  const handleAddCandidate = async () => {
+    try {
+      const accounts = await web3.eth.getAccounts();
+      await election.methods.addCandidate(name, party, constituency.name).send({
+        from: accounts[0],
+      });
+      const candidateId = await election.methods.candidatesCount().call();
+      //add candidateId into its constituency record in backend
+      const axiosConfig = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      axios
+        .post(
+          `/api/vote/${id}/add`,
+          { isAdmin: isAdmin, candidateId: candidateId },
+          axiosConfig
+        )
+        .then((res) => {
+          setLoadingAdd(false);
+          setIsReload(true);
+          setName("");
+          setParty("");
+          toast.success("Candidate added successfully!");
+        })
+        .catch((e) => {
+          setLoadingAdd(false);
+          toast.error("An error occured. Try again!");
+        });
+    } catch (e) {
+      toast.error("An error occured! Try again.");
+      setLoadingAdd(false);
     }
   };
 
@@ -153,7 +157,7 @@ const AddCandidateModal = ({
               id="submitBtn"
               className="btn btn-primary"
               data-dismiss="modal"
-              onClick={handleAddCandidate}
+              onClick={checkAddCandidate}
             >
               Submit
             </button>
