@@ -30,7 +30,7 @@ The voting-related information i.e. vote count, candidates' info, etc would be m
 
 - The number of users accessing and using this website has an upper limit of 1000 (much less than the real-life applicable count).
 - Metamask (a browser extension) has to be installed on the user's device to cast a vote.
-- The user's Metamask account address should be linked with their voter ID manually.
+- The user's Metamask account address should be linked with their voter ID manually by the officials, before the start of the election.
 
 ## Main functionalities
 
