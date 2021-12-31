@@ -7,30 +7,33 @@ DVote (Decentralized Voting) is an online voting system integrated with Blockcha
 - Prerequisite <br/>
   Node.js <br/>
   Metamask (browser extention)
-  
 - Clone the repository <br/>
+
 ```bash
 git clone https://github.com/vartikavr/D-Vote.git
 ```
 
 - Open command line in the <strong>cloned folder</strong>,
   - To install server-side dependencies, run `npm install`
-  - To install client-side dependencies, run `cd client` and then, `npm install` 
-  - To run the application for development, run `npm run dev`.<br/>
+  - To install client-side dependencies, run `cd client` and then, `npm install`
+  - To run the application for development, run `npm run dev`<br/>
     (This would run both the client and server)
   - Open [localhost:3000](http://localhost:3000/) in the browser.
 
 ## About the website
+
 The existing methods of voting (EVMs and ballot systems) have several issues in them, like requirements of resources for installation of polling booths, accessibility issues, time-consuming, not suitable for pandemic times, etc. Therefore, to solve such problems, I've proposed DVote as a solution. <br/>
 This is a website that handles state-level elections (for now) and provides all election-related functionalities like maintaining valid constituencies' records, parties' records, voters' records, candidates' records, generating a digital voter ID card (called DVote card), voting mechanism, etc. It would have two main modules : the Election Commission of India and the voters. <br/>
-The voting-related information i.e. vote count, candidates' info, etc would be managed using Ethereum blockchain, to ensure secure and tamper-proof voting. The other information (related to constituencies, voters, parties, etc) would be managed using the MongoDB database. Therefore, the website mainly uses the MERN stack + Ethereum blockchain.
+The voting-related information i.e. vote count, candidates' info, etc would be managed using Ethereum blockchain, to ensure secure and tamper-proof voting. The other information (related to constituencies, voters, parties, etc) would be managed using the MongoDB database. Therefore, the website mainly uses the MERN stack + Ethereum blockchain (for now, Rinkeby Test Network is being used).
 
 ## Assumptions
+
 - The number of users accessing and using this website has an upper limit of 1000 (much less than the real-life applicable count).
 - Metamask (a browser extension) has to be installed on the user's device to cast a vote.
 - The user's Metamask account address should be linked with their voter ID manually.
 
 ## Main functionalities
+
 - On this website, the admin (an official of the Election Commission of India) would be responsible to start or end the election.
 - Before the election is declared as started, the admin can add, edit or delete different valid constituencies, parties (along with their party symbols), valid voters, and valid contesting candidates.
 - A constituency can only be added by an admin and before the election starts. For deleting an existing constituency, it should not contain any contesting candidate in it.
